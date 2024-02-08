@@ -28,6 +28,8 @@ union
 multiple-events
 conditionals
 a-few-foundational-ideas
+degrees-of-freedom
+quick-intro-to-the-gaussian-distribution
 overview-of-univariate-distributions
 what-can-you-ask-of-a-distribution
 expected-value-of-a-random-variable
@@ -78,7 +80,6 @@ standard-deviation-vs.-standard-error
 the-central-limit-theorem
 week-4-lecture
 week-4-readings
-short-digression-degrees-of-freedom
 t-distribution
 chi-squared-distribution
 f-distribution

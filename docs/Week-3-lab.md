@@ -34,7 +34,7 @@ head(data)
 ```
 
 ```
-## [1] -0.7109568 -0.1434614 -0.6471464  1.7745566 -0.6546986  0.3795715
+## [1]  1.74765117 -0.25783258  0.79906831  0.59071186  0.31950945  0.02606016
 ```
 
 Note that you could have left off the "mean" and "sd" since R knows the order of inputs, that is you could simply write 
@@ -45,7 +45,7 @@ head(rnorm(100,0,1))
 ```
 
 ```
-## [1] -0.51999048 -0.81451071  1.41544330 -0.03789397  0.18113341  0.60178468
+## [1] -0.6634890 -1.2405381  2.8424101  0.3887692 -0.5350299 -2.0187744
 ```
 
 or even
@@ -56,8 +56,7 @@ head(rnorm(100))
 ```
 
 ```
-## [1] -1.112373315  0.005238656 -0.712900307 -0.541888233 -0.969120944
-## [6]  0.583388037
+## [1]  0.14746705 -1.26745932 -0.37705203 -0.50536389  0.02728185 -0.09581116
 ```
 
 since mean=0, sd=1 is the default. Until you are 100% comfortable with R, its better to leave all the options spelled out. 
@@ -108,11 +107,11 @@ hist(rnorm(1000,mean=0,sd=1),plot=F)
 ## [16]  3.5  4.0
 ## 
 ## $counts
-##  [1]   1   1   3  11  48  93 146 189 181 166  97  48  11   4   0   1
+##  [1]   1   0   8  15  37  96 145 194 192 150  88  56  12   2   2   2
 ## 
 ## $density
-##  [1] 0.002 0.002 0.006 0.022 0.096 0.186 0.292 0.378 0.362 0.332 0.194 0.096
-## [13] 0.022 0.008 0.000 0.002
+##  [1] 0.002 0.000 0.016 0.030 0.074 0.192 0.290 0.388 0.384 0.300 0.176 0.112
+## [13] 0.024 0.004 0.004 0.004
 ## 
 ## $mids
 ##  [1] -3.75 -3.25 -2.75 -2.25 -1.75 -1.25 -0.75 -0.25  0.25  0.75  1.25  1.75
@@ -179,35 +178,37 @@ lines(probability,quantiles2,col="red")
 
 Notice that because the variance of the new distribution is smaller, you get from a cumulative probability of 0 to 1 over a smaller range of values.
 
-Let's try some discrete distributions next:
+Now the issue of quantiles gets a bit complicated when we consider discrete distributions. A nice online post on this can be found [here](https://beta.boost.org/doc/libs/1_36_0/libs/math/doc/sf_and_dist/html/math_toolkit/policy/pol_tutorial/understand_dis_quant.html).
+
+Let's consider data drawn from a very simple fake dataset and plot the quantiles.
 
 
 ```r
-count<-rpois(500,lambda=3)
-table(count)
+count<-c(1,2,3,4,5)
+plot(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01)))
 ```
 
-```
-## count
-##   0   1   2   3   4   5   6   7   8   9  10  11 
-##  27  60 120 124  82  53  17  10   4   1   1   1
-```
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 
-```r
-mean(count)
-```
+This is confusing because the default definition of the quantiles here makes it look like the data are continuous and non-integer values are possible, but the actual data are discrete. In other words, if you asked what the "10th percentile" of this data were, this plot tells you that the 10th percentile is ~1.5, but that's not even a value in the original dataset. This behavior comes about because of the ambiguity described in the blog post above. It turns out there are at least 9 ways to define quantiles for discrete data, and you can see a decription of them [here](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/quantile.html) and [here](https://blogs.sas.com/content/iml/2017/05/24/definitions-sample-quantiles.html). The default behavior in R is to use the "type 7" quantile, which is a weighted average of the two closest values.
 
-```
-## [1] 2.998
-```
+We can see them all plotted together as follows:
+
 
 ```r
-var(count)
+count<-c(1,2,3,4,5)
+plot(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=1),typ="l",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=2),col="red",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=3),col="orange",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=4),col="yellow",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=5),col="green",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=6),col="blue",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=7),col="purple",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=8),col="gray",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=9),col="pink",lwd=2)
 ```
 
-```
-## [1] 2.923844
-```
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-13-1.png" width="672" />
 
 Standard deviation vs. Standard error
 -------------------------------------
@@ -235,14 +236,14 @@ hist(sample2)
 hist(sample3)
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 
 ```r
 sd(sample1)
 ```
 
 ```
-## [1] 1.715566
+## [1] 1.69525
 ```
 
 ```r
@@ -250,7 +251,7 @@ sd(sample2)
 ```
 
 ```
-## [1] 1.728041
+## [1] 1.713554
 ```
 
 ```r
@@ -258,7 +259,7 @@ sd(sample3)
 ```
 
 ```
-## [1] 1.733911
+## [1] 1.732784
 ```
 
 Notice that the standard deviation has not appreciably changed as we have increased the sample size.
@@ -276,7 +277,7 @@ for (i in 1:2000)
 hist(means)
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-15-1.png" width="672" />
 
 ```r
 s.e.1<-sqrt(var(rpois(sample.size,lambda=3))/sample.size)
@@ -285,7 +286,7 @@ s.e.1
 ```
 
 ```
-## [1] 0.05662266
+## [1] 0.05511766
 ```
 
 ```r
@@ -293,7 +294,7 @@ s.e.2
 ```
 
 ```
-## [1] 0.05508169
+## [1] 0.05514545
 ```
 
 Note that the number of experiments I looped through (2000 in this case) is not relevant. It just has to be big enough that you get a sense of what the distribution of means looks like. Now go back and modify the code so that sample.size=10000. 
@@ -328,7 +329,7 @@ plot(seq(0,10),dbinom(x=seq(0,10),size=9,prob=p),typ="h",lwd=5,xlab="# of succes
 lines(seq(0,10,0.1),dnorm(seq(0,10,0.1),9*p,9*p*(1-p)),col="red",lwd=2)
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-16-1.png" width="672" />
 
 and we can see how this might change for p=0.1
 
@@ -356,7 +357,7 @@ plot(seq(0,10),dbinom(x=seq(0,10),size=9,prob=p),typ="h",lwd=5,xlab="# of succes
 lines(seq(0,10,0.1),dnorm(seq(0,10,0.1),9*p,9*p*(1-p)),col="red",lwd=2)
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 
 If you look back at our notes from Tuesday, we see that the gamma and the Poisson distributions look quite similar (ignoring that one is discrete and the other continuous). We can use R to show us the differences are:
 
@@ -373,9 +374,9 @@ fit
 ```
 
 ```
-##       shape         scale   
-##   19.18929462    1.04725799 
-##  ( 0.85096645) ( 0.04705332)
+##      shape        scale   
+##   19.7295655    1.0325620 
+##  ( 0.8748910) ( 0.0463742)
 ```
 
 (Sometimes you get a warnings message about NAs when using fitdistr. The best explanation I can find says that this means R "encountered some difficulties during fitting". I can find no difference in the fits when you get the warning and when you don't, and the same sample.pois will sometimes give a warning and sometimes not, so it appears independent of the data itself. Do not ignore warnings() in R but don't be paralized by them, especially in a context where R is searching parameter space during an optimization. Be sure to search around for an explanation and make sure you are confident that R is still giving reasonable answers.)
@@ -404,7 +405,7 @@ fit$estimate
 
 ```
 ##     shape     scale 
-## 19.189295  1.047258
+## 19.729566  1.032562
 ```
 
 and notice that we can pull out the two estimates as
@@ -416,7 +417,7 @@ fit$estimate[1]
 
 ```
 ##    shape 
-## 19.18929
+## 19.72957
 ```
 
 ```r
@@ -425,7 +426,7 @@ fit$estimate[2]
 
 ```
 ##    scale 
-## 1.047258
+## 1.032562
 ```
 
 Now we want to plot the data, and the best fit line:
@@ -437,7 +438,7 @@ hist(sample.pois,breaks=x.vals)
 lines(x.vals,dgamma(x.vals,shape=fit$estimate[1],scale=fit$estimate[2])*1000,col="blue")
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 
 Two things to note here:
 1. I created x.vals just as a mechanism for plotting a relatively smooth line for the best-fit distribution
@@ -454,7 +455,7 @@ fit2<-fitdistr(sample.pois,"normal")
 lines(x.vals,dnorm(x.vals,mean=fit2$estimate[1],sd=fit2$estimate[2])*1000,col="red")
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-23-1.png" width="672" />
 
 **<span style="color: green;">Checkpoint #3: We see here that the data, which were generated by a Poisson distribution, are fit quite well by the Normal distribution. If this data were research data, what would be one major clue that the Poisson distribution was more appropriate than the Normal distribution?</span>**
 
@@ -477,7 +478,7 @@ qqplot(x=sample.pois, y=rgamma(1000,shape=fit$estimate[1],scale=fit$estimate[2])
 abline(a=0,b=1,col="red",lwd=2)
 ```
 
-<img src="Week-3-lab_files/figure-html/unnamed-chunk-23-1.png" width="672" />
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-24-1.png" width="672" />
 
 In lab today, we will dive into using R to understand the properties of the univariate distributions, but first we'll take a short detour to discuss the Central Limit Theorem (or CLT).
 
@@ -502,17 +503,8 @@ $$
 Then the Central Limit Theorem states:
 
 $$
-\lim_{n\rightarrow\infty} S_{n} \rightarrow N(\mu,\frac{\sigma^{2}}{n})
+\lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{\sigma^{2}}{n} \right)
 $$
-
-Here I have illustrated the CLT using the normal distribution, but the variables X can be drawn from ANY distribution (as long as the X are i.i.d. from a distribution with finite mean and variance), which is remarkable. For example, X could be drawn from a Bernoulli! 
-
-**<span style="color: green;">Checkpoint #4: Write a short script to draw Bernoulli distributed data. Play around with data of different sizes. Roughly how large does $n$ need to get before $S_{n}$ starts to "look" like a Normal distribution? What effect does the parameter $p$ have? </span>**
-
-The CLT is a very general statement, but do not forget the requirements that the mean and standard deviation exist (i.e. are finite). The Cauchy distribution, which is used all the time in atomic physics, has NO MEAN and NO SD – therefore, the CLT would not apply.
-
-IMPORTANT SIDE NOTE:
-
 The Central Limit Theorem tells us something very important about how well we can estimate the mean of a set of random i.i.d. numbers. 
 
 Our uncertainty of the mean is given by the variance of $S_{n}$ 
@@ -533,7 +525,123 @@ $$
 \mbox{s.e. of } \mu = \sqrt{\frac{s^{2}}{n}}
 $$
 
-Our uncertainty regarding our estimate of $\mu$ goes down as the $\sqrt{n}$.
+Our uncertainty regarding our estimate of $\mu$ goes down as the $\sqrt{n}$. Note that in the more general case, where draws are not from a Normal distribution to start with, we should think of this as
+
+$$
+\mbox{s.e. of } mean = \sqrt{\frac{\mbox{variance of the data}}{n}}
+$$
+
 
 DO NOT CONFUSE STANDARD ERROR AND STANDARD DEVIATION. Standard errors are just the standard deviation of a parameter estimate, it expresses uncertainty about the estimate. Standard deviations of a population simply reflect the spread in values. As you increase sample size, standard errors (i.e. standard deviations of the parameter estimate) get smaller and smaller, but standard deviations of the population values do not get smaller with increasing sample size.
+
+Here I have illustrated the CLT using the normal distribution, but the variables X can be drawn from ANY distribution (as long as the X are i.i.d. from a distribution with finite mean and variance), which is remarkable. For example, X could be drawn from a Bernoulli! 
+
+**<span style="color: green;">Checkpoint #4: Write a short script to draw Bernoulli distributed data. Play around with data of different sizes. Roughly how large does $n$ need to get before $S_{n}$ starts to "look" like a Normal distribution? What effect does the parameter $p$ have? </span>**
+
+The application of the CLT to Bernoulli and Binomially-distributed variables can be confusing, because we have to be very careful about what $\textit{n}$ is.
+
+Consider 100 draws from a Bernoulli distribution. Each draw is either 0 or 1. The CLT says that the mean of those 100 Bernoulli draws is as follows:
+
+$$
+\lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{p(1-p)}{100} \right)
+$$
+and therefore the standard error of the mean (i.e. the uncertainty in the mean of those 100 draws) is $\sqrt{\frac{p(1-p)}{100}}$. We can code that experiment as follows:
+
+
+```r
+mean_of_flip_outcomes<-c()
+for (j in 1:1000)
+{
+  vector_of_flip_outcomes<-c()
+  for (i in 1:100)
+    {
+      flip_outcome<-rbinom(1,1,0.5)
+      vector_of_flip_outcomes<-c(vector_of_flip_outcomes,flip_outcome)
+    }
+  mean_of_flip_outcomes<-c(mean_of_flip_outcomes,mean(vector_of_flip_outcomes))
+}
+hist(mean_of_flip_outcomes,breaks=30)
+```
+
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+
+```r
+sd(mean_of_flip_outcomes)
+```
+
+```
+## [1] 0.04865148
+```
+
+Notice that the standard error is what we would have expected.
+
+Now consider 100 draws from a Binomial distribution where each draw represents 5 coin flips. Each sample now represents the number of "heads" across the 5 flips and is in the set {0,1,2,3,4,5}. The CLT says that the mean of those 100 Binomial draws is as follows:
+
+$$
+\lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{50p(1-p)}{100} \right)
+$$
+
+and therefore the standard error of the mean (i.e. the uncertainty in the mean of those 100 draws) is $\sqrt{\frac{50p(1-p)}{100}}$.
+
+
+```r
+mean_of_flip_outcomes<-c()
+for (j in 1:1000)
+{
+  vector_of_flip_outcomes<-c()
+  for (i in 1:100)
+    {
+      flip_outcome<-rbinom(1,50,0.5) #this is the only line that changed
+      vector_of_flip_outcomes<-c(vector_of_flip_outcomes,flip_outcome)
+    }
+  mean_of_flip_outcomes<-c(mean_of_flip_outcomes,mean(vector_of_flip_outcomes))
+}
+hist(mean_of_flip_outcomes,breaks=30)
+```
+
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-26-1.png" width="672" />
+
+```r
+sd(mean_of_flip_outcomes)
+```
+
+```
+## [1] 0.3615065
+```
+
+Once again, the standard error is what we would have expected.
+
+Note that we could have written the code for this binomial experiment more compactly, as follows:
+
+
+```r
+mean_of_flip_outcomes<-c()
+for (j in 1:1000)
+{
+  flip_outcome<-rbinom(100,50,0.5) #here we are doing all 100 draws at once
+  mean_of_flip_outcomes<-c(mean_of_flip_outcomes,mean(flip_outcome))
+}
+
+hist(mean_of_flip_outcomes,breaks=30)
+```
+
+<img src="Week-3-lab_files/figure-html/unnamed-chunk-27-1.png" width="672" />
+
+```r
+sd(mean_of_flip_outcomes)
+```
+
+```
+## [1] 0.3681831
+```
+
+And again, our estimate of the standard error is what we expect.
+
+The key with Bernoulli and the Binomial is just being really clear on what $\textit{n}$ is, because we have 1) the number of coin flips in each experiment (this determines what the variance $\sigma^2$ is in the numerator part of the CLT) and 2) the number of experiments (which determines what the denominator is in the CLT).
+
+Finally, while the CLT is a very general statement, do not forget the requirements that the mean and standard deviation exist (i.e. are finite). The Cauchy distribution, which is used all the time in atomic physics but rarely in ecology, has NO MEAN and NO SD – therefore, the CLT would not apply.
+
+
+
+
 

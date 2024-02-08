@@ -243,6 +243,44 @@ $$
 \mbox{variance}_{biased} = \frac{1}{n}\sum_{i=1}^{n}(x_{i}-\bar{x})^{2}
 $$
 
+Why? It turns out that the unbiased estimator is not the sum of squared deviation *per data point* but rather the sum of squared deviation *per degree of freedom*. What's a degree of freedom? Glad you asked...
+
+## Degrees of freedom
+
+What is meant by “degrees of freedom”?
+
+Draw five boxes on the board:
+
+We want the mean to be 4 so the sum has to be 20. Let’s start filling in boxes...
+
+Do we get to choose the last number? No! The last number is constrained by the fact that we already fixed the mean to be 4.
+
+So we only have 4 degrees of freedom, the last box is prescribed by the mean. So if we know the mean of a sample of size n, we only have n-1 remaining degrees of freedom in the sample.
+
+degrees of freedom (dof)=sample size (n)-number of parameters already estimated from the data (p)
+
+If we go back for a second, it turns out that the real definition of the sample variance is
+
+$$
+\mbox{variance} =  \frac{\mbox{sum of squares}}{\mbox{degree of freedom}}
+$$
+
+What is the sum of squares?
+
+$$
+SS = \sum(Y-\bar{Y})^2
+$$
+How many degrees of freedom did I start with? (n)
+
+How many did I lose in the calculation of the SS? (1, for $\bar{Y}$)
+
+Therefore, an unbiased estimate of the population variance is:
+
+$$
+SS = \frac{\sum(Y-\bar{Y})^{2}}{n-1}
+$$
+##Back to talking about variance and standard deviation
+
 Keep in mind that variance measures a distance *squared*. So if your data represent heights in m, than the variance will have units $m^{2}$ or square-meters.
 
 The *standard deviation* is simply the square-root of variance, and is often denoted by the symbol $\sigma$.
@@ -253,7 +291,10 @@ $$
 
 If you were handed a distribution and you were asked to measure a characteristic "fatness" for the distribution, your estimate would be approximately $\sigma$. Note that $\sigma$ has the same units as the original data, so if your data were in meters, $\sigma$ would also be in meters.
 
-We won't get to Normal distributions properly until Week 3, but we will need one fact about the "Standard Normal Distribution" now. The Standard Normal distribution is a Normal (or Gaussian, bell-shaped) distribution with mean equal to zero and standard deviation equal to 1. 68$\%$ of the probability is contained within 1 standard deviation of the mean (so from -$\sigma$ to +$\sigma$), and 95$\%$ of the probability is contained within 2 standard deviations of the mean (so from -2$\sigma$ to +2$\sigma$). (Actually, 95$\%$ is contained with 1.96 standard deviations, so sometimes we will use the more precise 1.96 and sometimes you will see this rounded to 2.)
+Quick intro to the Gaussian distribution
+------------
+
+We won't get to Normal (a.k.a. Gaussian) distributions properly until Week 3, but we will need one fact about the "Standard Normal Distribution" now. The Standard Normal distribution is a Normal (or Gaussian, bell-shaped) distribution with mean equal to zero and standard deviation equal to 1. 68$\%$ of the probability is contained within 1 standard deviation of the mean (so from -$\sigma$ to +$\sigma$), and 95$\%$ of the probability is contained within 2 standard deviations of the mean (so from -2$\sigma$ to +2$\sigma$). (Actually, 95$\%$ is contained with 1.96 standard deviations, so sometimes we will use the more precise 1.96 and sometimes you will see this rounded to 2.)
 
 Overview of Univariate Distributions 
 --------------------------------

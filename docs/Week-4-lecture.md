@@ -5,43 +5,6 @@ Week 4 Lecture
 
 For this week, I suggest reading Aho Sections 4.4.2, 5.1, 5.2, 5.3-5.3.4 and Logan Chapter 3. I also strongly recommend reading Sections 1.1, 2.1, 3.1, and 4.1 of [Bolker Chapter 6](https://github.com/hlynch/Biometry2023/tree/master/_data/Bolker_Chapter6.pdf). Note that most students dislike this chapter by Bolker but it covers some fundamental information that will be important throughout your statistics journey and many advanced students come around to Bolker's way of thinking over time, so bear with it.
 
-Short digression: Degrees of freedom
-------------
-
-What is meant by “degrees of freedom”?
-
-Draw five boxes on the board:
-
-We want the mean to be 4 so the sum has to be 20. Let’s start filling in boxes...
-
-Do we get to choose the last number? No! The last number is constrained by the fact that we already fixed the mean to be 4.
-
-So we only have 4 degrees of freedom, the last box is prescribed by the mean. So if we know the mean of a sample of size n, we only have n-1 remaining degrees of freedom in the sample.
-
-degrees of freedom (dof)=sample size (n)-number of parameters already estimated from the data (p)
-
-If we go back for a second, it turns out that the real definition of the sample variance is
-
-$$
-\mbox{variance} =  \frac{\mbox{sum of squares}}{\mbox{degree of freedom}}
-$$
-
-What is the sum of squares?
-
-$$
-SS = \sum(Y-\bar{Y})^2
-$$
-How many degrees of freedom did I start with? (n)
-
-How many did I lose in the calculation of the SS? (1, for $\bar{Y}$)
-
-Therefore, an unbiased estimate of the population variance is:
-
-$$
-SS = \frac{\sum(Y-\bar{Y})^{2}}{n-1}
-$$
-
-Now that we have that out of the way, we can get back to univariate distributions. The three distributions we will learn about today all share one thing, which is that their parameters represent some kind of a number. The most difficult part of these distributions is keeping separate in your mind the number associated with the parameter and the number associated with the number of samples drawn from the distribution. 
 
 t-distribution
 -------------

@@ -115,13 +115,30 @@ lines(probability,quantiles2,col="red")
 
 Notice that because the variance of the new distribution is smaller, you get from a cumulative probability of 0 to 1 over a smaller range of values.
 
-Let's try some discrete distributions next:
+Now the issue of quantiles gets a bit complicated when we consider discrete distributions. A nice online post on this can be found [here](https://beta.boost.org/doc/libs/1_36_0/libs/math/doc/sf_and_dist/html/math_toolkit/policy/pol_tutorial/understand_dis_quant.html).
+
+Let's consider data drawn from a very simple fake dataset and plot the quantiles.
 
 ```{r}
-count<-rpois(500,lambda=3)
-table(count)
-mean(count)
-var(count)
+count<-c(1,2,3,4,5)
+plot(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01)))
+```
+
+This is confusing because the default definition of the quantiles here makes it look like the data are continuous and non-integer values are possible, but the actual data are discrete. In other words, if you asked what the "10th percentile" of this data were, this plot tells you that the 10th percentile is ~1.5, but that's not even a value in the original dataset. This behavior comes about because of the ambiguity described in the blog post above. It turns out there are at least 9 ways to define quantiles for discrete data, and you can see a decription of them [here](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/quantile.html) and [here](https://blogs.sas.com/content/iml/2017/05/24/definitions-sample-quantiles.html). The default behavior in R is to use the "type 7" quantile, which is a weighted average of the two closest values.
+
+We can see them all plotted together as follows:
+
+```{r}
+count<-c(1,2,3,4,5)
+plot(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=1),typ="l",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=2),col="red",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=3),col="orange",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=4),col="yellow",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=5),col="green",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=6),col="blue",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=7),col="purple",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=8),col="gray",lwd=2)
+lines(seq(0,1,0.01),quantile(count,probs=seq(0,1,0.01),type=9),col="pink",lwd=2)
 ```
 
 Standard deviation vs. Standard error
@@ -329,17 +346,8 @@ $$
 Then the Central Limit Theorem states:
 
 $$
-\lim_{n\rightarrow\infty} S_{n} \rightarrow N(\mu,\frac{\sigma^{2}}{n})
+\lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{\sigma^{2}}{n} \right)
 $$
-
-Here I have illustrated the CLT using the normal distribution, but the variables X can be drawn from ANY distribution (as long as the X are i.i.d. from a distribution with finite mean and variance), which is remarkable. For example, X could be drawn from a Bernoulli! 
-
-**<span style="color: green;">Checkpoint #4: Write a short script to draw Bernoulli distributed data. Play around with data of different sizes. Roughly how large does $n$ need to get before $S_{n}$ starts to "look" like a Normal distribution? What effect does the parameter $p$ have? </span>**
-
-The CLT is a very general statement, but do not forget the requirements that the mean and standard deviation exist (i.e. are finite). The Cauchy distribution, which is used all the time in atomic physics, has NO MEAN and NO SD – therefore, the CLT would not apply.
-
-IMPORTANT SIDE NOTE:
-
 The Central Limit Theorem tells us something very important about how well we can estimate the mean of a set of random i.i.d. numbers. 
 
 Our uncertainty of the mean is given by the variance of $S_{n}$ 
@@ -360,7 +368,93 @@ $$
 \mbox{s.e. of } \mu = \sqrt{\frac{s^{2}}{n}}
 $$
 
-Our uncertainty regarding our estimate of $\mu$ goes down as the $\sqrt{n}$.
+Our uncertainty regarding our estimate of $\mu$ goes down as the $\sqrt{n}$. Note that in the more general case, where draws are not from a Normal distribution to start with, we should think of this as
+
+$$
+\mbox{s.e. of } mean = \sqrt{\frac{\mbox{variance of the data}}{n}}
+$$
+
 
 DO NOT CONFUSE STANDARD ERROR AND STANDARD DEVIATION. Standard errors are just the standard deviation of a parameter estimate, it expresses uncertainty about the estimate. Standard deviations of a population simply reflect the spread in values. As you increase sample size, standard errors (i.e. standard deviations of the parameter estimate) get smaller and smaller, but standard deviations of the population values do not get smaller with increasing sample size.
+
+Here I have illustrated the CLT using the normal distribution, but the variables X can be drawn from ANY distribution (as long as the X are i.i.d. from a distribution with finite mean and variance), which is remarkable. For example, X could be drawn from a Bernoulli! 
+
+**<span style="color: green;">Checkpoint #4: Write a short script to draw Bernoulli distributed data. Play around with data of different sizes. Roughly how large does $n$ need to get before $S_{n}$ starts to "look" like a Normal distribution? What effect does the parameter $p$ have? </span>**
+
+The application of the CLT to Bernoulli and Binomially-distributed variables can be confusing, because we have to be very careful about what $\textit{n}$ is.
+
+Consider 100 draws from a Bernoulli distribution. Each draw is either 0 or 1. The CLT says that the mean of those 100 Bernoulli draws is as follows:
+
+$$
+\lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{p(1-p)}{100} \right)
+$$
+and therefore the standard error of the mean (i.e. the uncertainty in the mean of those 100 draws) is $\sqrt{\frac{p(1-p)}{100}}$. We can code that experiment as follows:
+
+```{r}
+mean_of_flip_outcomes<-c()
+for (j in 1:1000)
+{
+  vector_of_flip_outcomes<-c()
+  for (i in 1:100)
+    {
+      flip_outcome<-rbinom(1,1,0.5)
+      vector_of_flip_outcomes<-c(vector_of_flip_outcomes,flip_outcome)
+    }
+  mean_of_flip_outcomes<-c(mean_of_flip_outcomes,mean(vector_of_flip_outcomes))
+}
+hist(mean_of_flip_outcomes,breaks=30)
+sd(mean_of_flip_outcomes)
+```
+
+Notice that the standard error is what we would have expected.
+
+Now consider 100 draws from a Binomial distribution where each draw represents 5 coin flips. Each sample now represents the number of "heads" across the 5 flips and is in the set {0,1,2,3,4,5}. The CLT says that the mean of those 100 Binomial draws is as follows:
+
+$$
+\lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{50p(1-p)}{100} \right)
+$$
+
+and therefore the standard error of the mean (i.e. the uncertainty in the mean of those 100 draws) is $\sqrt{\frac{50p(1-p)}{100}}$.
+
+```{r}
+mean_of_flip_outcomes<-c()
+for (j in 1:1000)
+{
+  vector_of_flip_outcomes<-c()
+  for (i in 1:100)
+    {
+      flip_outcome<-rbinom(1,50,0.5) #this is the only line that changed
+      vector_of_flip_outcomes<-c(vector_of_flip_outcomes,flip_outcome)
+    }
+  mean_of_flip_outcomes<-c(mean_of_flip_outcomes,mean(vector_of_flip_outcomes))
+}
+hist(mean_of_flip_outcomes,breaks=30)
+sd(mean_of_flip_outcomes)
+```
+
+Once again, the standard error is what we would have expected.
+
+Note that we could have written the code for this binomial experiment more compactly, as follows:
+
+```{r}
+mean_of_flip_outcomes<-c()
+for (j in 1:1000)
+{
+  flip_outcome<-rbinom(100,50,0.5) #here we are doing all 100 draws at once
+  mean_of_flip_outcomes<-c(mean_of_flip_outcomes,mean(flip_outcome))
+}
+
+hist(mean_of_flip_outcomes,breaks=30)
+sd(mean_of_flip_outcomes)
+```
+
+And again, our estimate of the standard error is what we expect.
+
+The key with Bernoulli and the Binomial is just being really clear on what $\textit{n}$ is, because we have 1) the number of coin flips in each experiment (this determines what the variance $\sigma^2$ is in the numerator part of the CLT) and 2) the number of experiments (which determines what the denominator is in the CLT).
+
+Finally, while the CLT is a very general statement, do not forget the requirements that the mean and standard deviation exist (i.e. are finite). The Cauchy distribution, which is used all the time in atomic physics but rarely in ecology, has NO MEAN and NO SD – therefore, the CLT would not apply.
+
+
+
+
 
