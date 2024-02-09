@@ -34,7 +34,7 @@ head(data)
 ```
 
 ```
-## [1]  0.4594124  1.9505954  0.6869558  0.6028884 -1.3030138  1.0543617
+## [1] -0.06467143  0.27624889 -0.27533372  1.17666806 -0.19830591 -0.62867155
 ```
 
 Note that you could have left off the "mean" and "sd" since R knows the order of inputs, that is you could simply write 
@@ -45,7 +45,7 @@ head(rnorm(100,0,1))
 ```
 
 ```
-## [1]  0.4884953  0.6745639 -0.7005208  1.7215710 -0.4664255 -0.6819726
+## [1] -0.61276281  1.20288490 -1.10593995 -1.56600779 -0.03059073 -0.97025569
 ```
 
 or even
@@ -56,7 +56,7 @@ head(rnorm(100))
 ```
 
 ```
-## [1] -0.09728087 -0.07712220 -0.61214907 -1.25687453  0.93532757 -0.42887636
+## [1]  0.9825303  0.7515100  1.3474202  0.9184454 -1.6426228 -0.2109168
 ```
 
 since mean=0, sd=1 is the default. Until you are 100% comfortable with R, its better to leave all the options spelled out. 
@@ -104,17 +104,18 @@ hist(rnorm(1000,mean=0,sd=1),plot=F)
 ```
 ## $breaks
 ##  [1] -3.5 -3.0 -2.5 -2.0 -1.5 -1.0 -0.5  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5
+## [16]  4.0  4.5
 ## 
 ## $counts
-##  [1]   1   6  16  41  90 153 170 181 167 103  47  19   5   1
+##  [1]   1   5  14  44 102 135 188 184 138 103  56  22   5   2   0   1
 ## 
 ## $density
-##  [1] 0.002 0.012 0.032 0.082 0.180 0.306 0.340 0.362 0.334 0.206 0.094 0.038
-## [13] 0.010 0.002
+##  [1] 0.002 0.010 0.028 0.088 0.204 0.270 0.376 0.368 0.276 0.206 0.112 0.044
+## [13] 0.010 0.004 0.000 0.002
 ## 
 ## $mids
 ##  [1] -3.25 -2.75 -2.25 -1.75 -1.25 -0.75 -0.25  0.25  0.75  1.25  1.75  2.25
-## [13]  2.75  3.25
+## [13]  2.75  3.25  3.75  4.25
 ## 
 ## $xname
 ## [1] "rnorm(1000, mean = 0, sd = 1)"
@@ -242,7 +243,7 @@ sd(sample1)
 ```
 
 ```
-## [1] 1.762658
+## [1] 1.816975
 ```
 
 ```r
@@ -250,7 +251,7 @@ sd(sample2)
 ```
 
 ```
-## [1] 1.764052
+## [1] 1.739023
 ```
 
 ```r
@@ -258,7 +259,7 @@ sd(sample3)
 ```
 
 ```
-## [1] 1.730884
+## [1] 1.734397
 ```
 
 Notice that the standard deviation has not appreciably changed as we have increased the sample size.
@@ -285,7 +286,7 @@ s.e.1
 ```
 
 ```
-## [1] 0.05622331
+## [1] 0.05354978
 ```
 
 ```r
@@ -293,7 +294,7 @@ s.e.2
 ```
 
 ```
-## [1] 0.05436465
+## [1] 0.05514818
 ```
 
 Note that the number of experiments I looped through (2000 in this case) is not relevant. It just has to be big enough that you get a sense of what the distribution of means looks like. Now go back and modify the code so that sample.size=10000. 
@@ -369,13 +370,22 @@ First, install the library 'MASS'.
 library(MASS) #this loads the library into the workspace
 sample.pois<-rpois(1000,lambda=20)
 fit<-fitdistr(sample.pois,"gamma",start=list(shape=20,scale=1))
+```
+
+```
+## Warning in densfun(x, parm[1], parm[2], ...): NaNs produced
+
+## Warning in densfun(x, parm[1], parm[2], ...): NaNs produced
+```
+
+```r
 fit
 ```
 
 ```
 ##       shape         scale   
-##   19.44198241    1.03455952 
-##  ( 0.86185117) ( 0.04645696)
+##   19.86255813    1.00576169 
+##  ( 0.88083265) ( 0.04516895)
 ```
 
 (Sometimes you get a warnings message about NAs when using fitdistr. The best explanation I can find says that this means R "encountered some difficulties during fitting". I can find no difference in the fits when you get the warning and when you don't, and the same sample.pois will sometimes give a warning and sometimes not, so it appears independent of the data itself. Do not ignore warnings() in R but don't be paralized by them, especially in a context where R is searching parameter space during an optimization. Be sure to search around for an explanation and make sure you are confident that R is still giving reasonable answers.)
@@ -403,8 +413,8 @@ fit$estimate
 ```
 
 ```
-##    shape    scale 
-## 19.44198  1.03456
+##     shape     scale 
+## 19.862558  1.005762
 ```
 
 and notice that we can pull out the two estimates as
@@ -416,7 +426,7 @@ fit$estimate[1]
 
 ```
 ##    shape 
-## 19.44198
+## 19.86256
 ```
 
 ```r
@@ -424,8 +434,8 @@ fit$estimate[2]
 ```
 
 ```
-##   scale 
-## 1.03456
+##    scale 
+## 1.005762
 ```
 
 Now we want to plot the data, and the best fit line:
@@ -569,7 +579,7 @@ sd(mean_of_flip_outcomes)
 ```
 
 ```
-## [1] 0.05125492
+## [1] 0.0490398
 ```
 
 Notice that the standard error is what we would have expected.
@@ -605,7 +615,7 @@ sd(mean_of_flip_outcomes)
 ```
 
 ```
-## [1] 0.3408854
+## [1] 0.3411682
 ```
 
 Once again, the standard error is what we would have expected.
@@ -631,7 +641,7 @@ sd(mean_of_flip_outcomes)
 ```
 
 ```
-## [1] 0.3598397
+## [1] 0.3441763
 ```
 
 And again, our estimate of the standard error is what we expect.
