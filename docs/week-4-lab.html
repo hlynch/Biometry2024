@@ -23,7 +23,7 @@
 <meta name="author" content="Heather Lynch" />
 
 
-<meta name="date" content="2024-02-08" />
+<meta name="date" content="2024-02-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -598,14 +598,14 @@ n-\frac{1}{\hat{A}}\sum_{i}\left((X_{i}-\mu)^{2}\right)=0
 <div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="week-4-lab.html#cb250-1" tabindex="-1"></a>opt1<span class="ot">&lt;-</span><span class="fu">optim</span>(<span class="at">par=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="at">fn=</span>neg.ll.v2,<span class="at">x=</span>x)</span>
 <span id="cb250-2"><a href="week-4-lab.html#cb250-2" tabindex="-1"></a>opt1</span></code></pre></div>
 <pre><code>## $par
-## [1] 1.041738 2.005322
+## [1] 1.012946 1.965291
 ## 
 ## $value
-## [1] 2114.855
+## [1] 2094.492
 ## 
 ## $counts
 ## function gradient 
-##       59       NA 
+##       57       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -616,8 +616,8 @@ n-\frac{1}{\hat{A}}\sum_{i}\left((X_{i}-\mu)^{2}\right)=0
 <div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="week-4-lab.html#cb252-1" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
 <span id="cb252-2"><a href="week-4-lab.html#cb252-2" tabindex="-1"></a><span class="fu">fitdistr</span>(x,<span class="st">&quot;normal&quot;</span>)</span></code></pre></div>
 <pre><code>##       mean          sd    
-##   1.04178188   2.00554656 
-##  (0.06342095) (0.04484538)</code></pre>
+##   1.01296616   1.96512015 
+##  (0.06214256) (0.04394142)</code></pre>
 <p>Notice that this function outputs the SE as well, whereas our function and ‘optim’ only give the MLE.</p>
 <p>The likelihood is a relative concept that only makes sense relative to other possible datasets. The absolute magnitude depends on the “sample space” of the data and sometimes even the maximum likelihood is a very small value. So all we can do is compare relative likelihoods.</p>
 <p>We now know how to use maximum likelihood to calculate the “best” parameter value (in the sense that it is the parameter value that maximizes the likelihood, or minimizes the negative log-likelihood.) But we know that parameter estimates by themselves are useless. We need to somehow calculate the uncertainty in our maximum likelihood estimate, i.e. the confidence interval.</p>
