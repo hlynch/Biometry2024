@@ -4,6 +4,8 @@ fig:unnamed-chunk-3
 fig:unnamed-chunk-4
 fig:unnamed-chunk-5
 fig:unnamed-chunk-6
+tab:unnamed-chunk-12
+fig:unnamed-chunk-13
 fig:unnamed-chunk-12
 fig:unnamed-chunk-18
 fig:unnamed-chunk-8
@@ -101,6 +103,7 @@ side-note-about-the-wald-test
 chi-squared-goodness-of-fit-test
 chi-squared-test-of-independence
 week-5-lab
+t-test
 f-test
 comparing-two-proportions-1
 comparing-two-distributions-1

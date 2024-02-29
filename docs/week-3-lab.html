@@ -23,7 +23,7 @@
 <meta name="author" content="Heather Lynch" />
 
 
-<meta name="date" content="2024-02-09" />
+<meta name="date" content="2024-02-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,6 +52,8 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -245,9 +247,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="10" data-path="week-5-lab.html"><a href="week-5-lab.html"><i class="fa fa-check"></i><b>10</b> Week 5 Lab</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="week-5-lab.html"><a href="week-5-lab.html#f-test"><i class="fa fa-check"></i><b>10.1</b> F-test</a></li>
-<li class="chapter" data-level="10.2" data-path="week-5-lab.html"><a href="week-5-lab.html#comparing-two-proportions-1"><i class="fa fa-check"></i><b>10.2</b> Comparing two proportions</a></li>
-<li class="chapter" data-level="10.3" data-path="week-5-lab.html"><a href="week-5-lab.html#comparing-two-distributions-1"><i class="fa fa-check"></i><b>10.3</b> Comparing two distributions</a></li>
+<li class="chapter" data-level="10.1" data-path="week-5-lab.html"><a href="week-5-lab.html#t-test"><i class="fa fa-check"></i><b>10.1</b> t-test</a></li>
+<li class="chapter" data-level="10.2" data-path="week-5-lab.html"><a href="week-5-lab.html#f-test"><i class="fa fa-check"></i><b>10.2</b> F-test</a></li>
+<li class="chapter" data-level="10.3" data-path="week-5-lab.html"><a href="week-5-lab.html#comparing-two-proportions-1"><i class="fa fa-check"></i><b>10.3</b> Comparing two proportions</a></li>
+<li class="chapter" data-level="10.4" data-path="week-5-lab.html"><a href="week-5-lab.html#comparing-two-distributions-1"><i class="fa fa-check"></i><b>10.4</b> Comparing two distributions</a></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="week-6-lecture.html"><a href="week-6-lecture.html"><i class="fa fa-check"></i><b>11</b> Week 6 Lecture</a>
 <ul>
@@ -499,13 +502,13 @@ Poisson: dpois, ppois, qpois, rpois</p>
 <p>First, lets draw a couple of random values from the standard normal. We can take 100 random draws from the Standard Normal N(0,1) using the R function ‘rnorm’.</p>
 <div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="week-3-lab.html#cb187-1" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="at">mean=</span><span class="dv">0</span>,<span class="at">sd=</span><span class="dv">1</span>)</span>
 <span id="cb187-2"><a href="week-3-lab.html#cb187-2" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div>
-<pre><code>## [1] -0.06467143  0.27624889 -0.27533372  1.17666806 -0.19830591 -0.62867155</code></pre>
+<pre><code>## [1] -1.1214727  0.8311796 -0.1835027 -0.3040141  0.3719350 -1.6522810</code></pre>
 <p>Note that you could have left off the “mean” and “sd” since R knows the order of inputs, that is you could simply write</p>
 <div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="week-3-lab.html#cb189-1" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="dv">0</span>,<span class="dv">1</span>)) </span></code></pre></div>
-<pre><code>## [1] -0.61276281  1.20288490 -1.10593995 -1.56600779 -0.03059073 -0.97025569</code></pre>
+<pre><code>## [1] -0.7438033 -0.1697744  1.2905630  1.9585920  1.0355729 -0.6297788</code></pre>
 <p>or even</p>
 <div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="week-3-lab.html#cb191-1" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>)) </span></code></pre></div>
-<pre><code>## [1]  0.9825303  0.7515100  1.3474202  0.9184454 -1.6426228 -0.2109168</code></pre>
+<pre><code>## [1]  1.7496752 -1.1263519 -0.5249335 -1.7085580 -0.2732732  0.5457269</code></pre>
 <p>since mean=0, sd=1 is the default. Until you are 100% comfortable with R, its better to leave all the options spelled out.</p>
 <p>Make a histogram of data</p>
 <div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="week-3-lab.html#cb193-1" tabindex="-1"></a><span class="fu">hist</span>(data)</span></code></pre></div>
@@ -521,19 +524,18 @@ Poisson: dpois, ppois, qpois, rpois</p>
 <p>What happens if you add the flag “plot=F”?</p>
 <div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="week-3-lab.html#cb197-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">rnorm</span>(<span class="dv">1000</span>,<span class="at">mean=</span><span class="dv">0</span>,<span class="at">sd=</span><span class="dv">1</span>),<span class="at">plot=</span>F)</span></code></pre></div>
 <pre><code>## $breaks
-##  [1] -3.5 -3.0 -2.5 -2.0 -1.5 -1.0 -0.5  0.0  0.5  1.0  1.5  2.0  2.5  3.0  3.5
-## [16]  4.0  4.5
+##  [1] -3.5 -3.0 -2.5 -2.0 -1.5 -1.0 -0.5  0.0  0.5  1.0  1.5  2.0  2.5  3.0
 ## 
 ## $counts
-##  [1]   1   5  14  44 102 135 188 184 138 103  56  22   5   2   0   1
+##  [1]   2   7  19  45  89 156 190 199 150  80  41  19   3
 ## 
 ## $density
-##  [1] 0.002 0.010 0.028 0.088 0.204 0.270 0.376 0.368 0.276 0.206 0.112 0.044
-## [13] 0.010 0.004 0.000 0.002
+##  [1] 0.004 0.014 0.038 0.090 0.178 0.312 0.380 0.398 0.300 0.160 0.082 0.038
+## [13] 0.006
 ## 
 ## $mids
 ##  [1] -3.25 -2.75 -2.25 -1.75 -1.25 -0.75 -0.25  0.25  0.75  1.25  1.75  2.25
-## [13]  2.75  3.25  3.75  4.25
+## [13]  2.75
 ## 
 ## $xname
 ## [1] &quot;rnorm(1000, mean = 0, sd = 1)&quot;
@@ -602,11 +604,11 @@ Poisson: dpois, ppois, qpois, rpois</p>
 <span id="cb205-7"><a href="week-3-lab.html#cb205-7" tabindex="-1"></a><span class="fu">hist</span>(sample3)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="week-3-lab.html#cb206-1" tabindex="-1"></a><span class="fu">sd</span>(sample1)</span></code></pre></div>
-<pre><code>## [1] 1.816975</code></pre>
+<pre><code>## [1] 1.718122</code></pre>
 <div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="week-3-lab.html#cb208-1" tabindex="-1"></a><span class="fu">sd</span>(sample2)</span></code></pre></div>
-<pre><code>## [1] 1.739023</code></pre>
+<pre><code>## [1] 1.738065</code></pre>
 <div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="week-3-lab.html#cb210-1" tabindex="-1"></a><span class="fu">sd</span>(sample3)</span></code></pre></div>
-<pre><code>## [1] 1.734397</code></pre>
+<pre><code>## [1] 1.728565</code></pre>
 <p>Notice that the standard deviation has not appreciably changed as we have increased the sample size.</p>
 <p>Now lets run some code to calculate the standard error of the mean:</p>
 <div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="week-3-lab.html#cb212-1" tabindex="-1"></a>sample.size<span class="ot">&lt;-</span><span class="dv">1000</span></span>
@@ -620,9 +622,9 @@ Poisson: dpois, ppois, qpois, rpois</p>
 <div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="week-3-lab.html#cb213-1" tabindex="-1"></a>s.e<span class="fl">.1</span><span class="ot">&lt;-</span><span class="fu">sqrt</span>(<span class="fu">var</span>(<span class="fu">rpois</span>(sample.size,<span class="at">lambda=</span><span class="dv">3</span>))<span class="sc">/</span>sample.size)</span>
 <span id="cb213-2"><a href="week-3-lab.html#cb213-2" tabindex="-1"></a>s.e<span class="fl">.2</span><span class="ot">&lt;-</span><span class="fu">sd</span>(means)</span>
 <span id="cb213-3"><a href="week-3-lab.html#cb213-3" tabindex="-1"></a>s.e<span class="fl">.1</span></span></code></pre></div>
-<pre><code>## [1] 0.05354978</code></pre>
+<pre><code>## [1] 0.05623289</code></pre>
 <div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="week-3-lab.html#cb215-1" tabindex="-1"></a>s.e<span class="fl">.2</span></span></code></pre></div>
-<pre><code>## [1] 0.05514818</code></pre>
+<pre><code>## [1] 0.05483403</code></pre>
 <p>Note that the number of experiments I looped through (2000 in this case) is not relevant. It just has to be big enough that you get a sense of what the distribution of means looks like. Now go back and modify the code so that sample.size=10000.</p>
 <p><strong><span style="color: green;">Checkpoint #2: How does increasing the sample size change the result?</span></strong></p>
 <p>On Tuesday we discussed the probability mass function for the binomial. While an individual flip of the coin can be thought of as a success/failure, the binomial is answering the question “How many succesess do I expect if I try n times.”</p>
@@ -675,44 +677,41 @@ Poisson: dpois, ppois, qpois, rpois</p>
 <p>First, install the library ‘MASS’.</p>
 <div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="week-3-lab.html#cb219-1" tabindex="-1"></a><span class="fu">library</span>(MASS) <span class="co">#this loads the library into the workspace</span></span>
 <span id="cb219-2"><a href="week-3-lab.html#cb219-2" tabindex="-1"></a>sample.pois<span class="ot">&lt;-</span><span class="fu">rpois</span>(<span class="dv">1000</span>,<span class="at">lambda=</span><span class="dv">20</span>)</span>
-<span id="cb219-3"><a href="week-3-lab.html#cb219-3" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">fitdistr</span>(sample.pois,<span class="st">&quot;gamma&quot;</span>,<span class="at">start=</span><span class="fu">list</span>(<span class="at">shape=</span><span class="dv">20</span>,<span class="at">scale=</span><span class="dv">1</span>))</span></code></pre></div>
-<pre><code>## Warning in densfun(x, parm[1], parm[2], ...): NaNs produced
-
-## Warning in densfun(x, parm[1], parm[2], ...): NaNs produced</code></pre>
-<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="week-3-lab.html#cb221-1" tabindex="-1"></a>fit</span></code></pre></div>
+<span id="cb219-3"><a href="week-3-lab.html#cb219-3" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">fitdistr</span>(sample.pois,<span class="st">&quot;gamma&quot;</span>,<span class="at">start=</span><span class="fu">list</span>(<span class="at">shape=</span><span class="dv">20</span>,<span class="at">scale=</span><span class="dv">1</span>))</span>
+<span id="cb219-4"><a href="week-3-lab.html#cb219-4" tabindex="-1"></a>fit</span></code></pre></div>
 <pre><code>##       shape         scale   
-##   19.86255813    1.00576169 
-##  ( 0.88083265) ( 0.04516895)</code></pre>
+##   17.74157926    1.13513032 
+##  ( 0.78603146) ( 0.05100811)</code></pre>
 <p>(Sometimes you get a warnings message about NAs when using fitdistr. The best explanation I can find says that this means R “encountered some difficulties during fitting”. I can find no difference in the fits when you get the warning and when you don’t, and the same sample.pois will sometimes give a warning and sometimes not, so it appears independent of the data itself. Do not ignore warnings() in R but don’t be paralized by them, especially in a context where R is searching parameter space during an optimization. Be sure to search around for an explanation and make sure you are confident that R is still giving reasonable answers.)</p>
 <p>Notice that we are fitting a gamma distribution to this data, and we specify what distribution we want to fit using the name of the distribution in quotes. <em>Remember that rgamma can take as inputs shape,scale or shape,rate=1/scale. I am using scale as the input because it is consistent with the way I introduced the gamma distribution in class. Be aware that some people will use rate and some will use scale and you always have to check.</em></p>
 <p>When we print the object fit, we get the estimates and the standard errors, but at first it isn’t obvious how to extract the estimates (and errors) so we can use them in other calculations.</p>
 <p>We start by using the function names to “get inside” this object and see what it is made up of.</p>
-<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="week-3-lab.html#cb223-1" tabindex="-1"></a><span class="fu">names</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="week-3-lab.html#cb221-1" tabindex="-1"></a><span class="fu">names</span>(fit)</span></code></pre></div>
 <pre><code>## [1] &quot;estimate&quot; &quot;sd&quot;       &quot;vcov&quot;     &quot;loglik&quot;   &quot;n&quot;</code></pre>
 <p>We now look at</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="week-3-lab.html#cb225-1" tabindex="-1"></a>fit<span class="sc">$</span>estimate</span></code></pre></div>
-<pre><code>##     shape     scale 
-## 19.862558  1.005762</code></pre>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="week-3-lab.html#cb223-1" tabindex="-1"></a>fit<span class="sc">$</span>estimate</span></code></pre></div>
+<pre><code>##    shape    scale 
+## 17.74158  1.13513</code></pre>
 <p>and notice that we can pull out the two estimates as</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="week-3-lab.html#cb227-1" tabindex="-1"></a>fit<span class="sc">$</span>estimate[<span class="dv">1</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="week-3-lab.html#cb225-1" tabindex="-1"></a>fit<span class="sc">$</span>estimate[<span class="dv">1</span>]</span></code></pre></div>
 <pre><code>##    shape 
-## 19.86256</code></pre>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="week-3-lab.html#cb229-1" tabindex="-1"></a>fit<span class="sc">$</span>estimate[<span class="dv">2</span>]</span></code></pre></div>
-<pre><code>##    scale 
-## 1.005762</code></pre>
+## 17.74158</code></pre>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="week-3-lab.html#cb227-1" tabindex="-1"></a>fit<span class="sc">$</span>estimate[<span class="dv">2</span>]</span></code></pre></div>
+<pre><code>##   scale 
+## 1.13513</code></pre>
 <p>Now we want to plot the data, and the best fit line:</p>
-<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="week-3-lab.html#cb231-1" tabindex="-1"></a>x.vals<span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">5</span>,<span class="at">to=</span><span class="dv">40</span>,<span class="at">by=</span><span class="dv">1</span>)</span>
-<span id="cb231-2"><a href="week-3-lab.html#cb231-2" tabindex="-1"></a><span class="fu">hist</span>(sample.pois,<span class="at">breaks=</span>x.vals)</span>
-<span id="cb231-3"><a href="week-3-lab.html#cb231-3" tabindex="-1"></a><span class="fu">lines</span>(x.vals,<span class="fu">dgamma</span>(x.vals,<span class="at">shape=</span>fit<span class="sc">$</span>estimate[<span class="dv">1</span>],<span class="at">scale=</span>fit<span class="sc">$</span>estimate[<span class="dv">2</span>])<span class="sc">*</span><span class="dv">1000</span>,<span class="at">col=</span><span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="week-3-lab.html#cb229-1" tabindex="-1"></a>x.vals<span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">5</span>,<span class="at">to=</span><span class="dv">40</span>,<span class="at">by=</span><span class="dv">1</span>)</span>
+<span id="cb229-2"><a href="week-3-lab.html#cb229-2" tabindex="-1"></a><span class="fu">hist</span>(sample.pois,<span class="at">breaks=</span>x.vals)</span>
+<span id="cb229-3"><a href="week-3-lab.html#cb229-3" tabindex="-1"></a><span class="fu">lines</span>(x.vals,<span class="fu">dgamma</span>(x.vals,<span class="at">shape=</span>fit<span class="sc">$</span>estimate[<span class="dv">1</span>],<span class="at">scale=</span>fit<span class="sc">$</span>estimate[<span class="dv">2</span>])<span class="sc">*</span><span class="dv">1000</span>,<span class="at">col=</span><span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>Two things to note here:
 1. I created x.vals just as a mechanism for plotting a relatively smooth line for the best-fit distribution
 2. I multiplied for 1000 because I had originally drawn 1000 values, and this puts my best-fit line on the same scale as the histogram.</p>
 <p>NOTE: We can guess at starting values by making sure the mean and variance of the gamma match the mean and variance of the data. This method is an example of “moment matching”. In other words, we take two distributions and get a close fit between them by requiring that they have the same mean and, if possible, the same variance.</p>
 <p>We can see that if we generate data from a Poisson, it can be fit very well by a gamma distribution. It can also be fit quite well by a Normal distribution</p>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="week-3-lab.html#cb232-1" tabindex="-1"></a><span class="fu">hist</span>(sample.pois,<span class="at">breaks=</span>x.vals)</span>
-<span id="cb232-2"><a href="week-3-lab.html#cb232-2" tabindex="-1"></a>fit2<span class="ot">&lt;-</span><span class="fu">fitdistr</span>(sample.pois,<span class="st">&quot;normal&quot;</span>)</span>
-<span id="cb232-3"><a href="week-3-lab.html#cb232-3" tabindex="-1"></a><span class="fu">lines</span>(x.vals,<span class="fu">dnorm</span>(x.vals,<span class="at">mean=</span>fit2<span class="sc">$</span>estimate[<span class="dv">1</span>],<span class="at">sd=</span>fit2<span class="sc">$</span>estimate[<span class="dv">2</span>])<span class="sc">*</span><span class="dv">1000</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="week-3-lab.html#cb230-1" tabindex="-1"></a><span class="fu">hist</span>(sample.pois,<span class="at">breaks=</span>x.vals)</span>
+<span id="cb230-2"><a href="week-3-lab.html#cb230-2" tabindex="-1"></a>fit2<span class="ot">&lt;-</span><span class="fu">fitdistr</span>(sample.pois,<span class="st">&quot;normal&quot;</span>)</span>
+<span id="cb230-3"><a href="week-3-lab.html#cb230-3" tabindex="-1"></a><span class="fu">lines</span>(x.vals,<span class="fu">dnorm</span>(x.vals,<span class="at">mean=</span>fit2<span class="sc">$</span>estimate[<span class="dv">1</span>],<span class="at">sd=</span>fit2<span class="sc">$</span>estimate[<span class="dv">2</span>])<span class="sc">*</span><span class="dv">1000</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p><strong><span style="color: green;">Checkpoint #3: We see here that the data, which were generated by a Poisson distribution, are fit quite well by the Normal distribution. If this data were research data, what would be one major clue that the Poisson distribution was more appropriate than the Normal distribution?</span></strong></p>
 <p>So we have shown that given certain parameters, a Gamma distribution can approximate a Poisson, and we have shown that the Normal can approximate the draws from a Poisson distribution. This latter fact shouldn’t come as a surprise because</p>
@@ -722,8 +721,8 @@ Poisson: dpois, ppois, qpois, rpois</p>
 <p>The function ‘fitdistr’ is one of the MOST HANDY functions that exist for probabilities in R.</p>
 <p>Notice that ‘fitdistr’ also gives the estimated standard errors in parentheses. The next few weeks will be dedicated to learning more about the interpretation and creation of these standard errors or, equivalently, confidence intervals.</p>
 <p>Finally, I want to introduce the idea of a QQ-plot. A QQ-plot has the quantiles of two distributions plotted against one another. If the two distributions are quite similar, the QQ-plot will fall roughly on the 1:1 line. We can compare the Poisson data to the gamma distribution fit using a QQ-plot of the original Poisson sample and an equally sized sample from our best-fit gamma distribution.</p>
-<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="week-3-lab.html#cb233-1" tabindex="-1"></a><span class="fu">qqplot</span>(<span class="at">x=</span>sample.pois, <span class="at">y=</span><span class="fu">rgamma</span>(<span class="dv">1000</span>,<span class="at">shape=</span>fit<span class="sc">$</span>estimate[<span class="dv">1</span>],<span class="at">scale=</span>fit<span class="sc">$</span>estimate[<span class="dv">2</span>]))</span>
-<span id="cb233-2"><a href="week-3-lab.html#cb233-2" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span><span class="dv">0</span>,<span class="at">b=</span><span class="dv">1</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">lwd=</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="week-3-lab.html#cb231-1" tabindex="-1"></a><span class="fu">qqplot</span>(<span class="at">x=</span>sample.pois, <span class="at">y=</span><span class="fu">rgamma</span>(<span class="dv">1000</span>,<span class="at">shape=</span>fit<span class="sc">$</span>estimate[<span class="dv">1</span>],<span class="at">scale=</span>fit<span class="sc">$</span>estimate[<span class="dv">2</span>]))</span>
+<span id="cb231-2"><a href="week-3-lab.html#cb231-2" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span><span class="dv">0</span>,<span class="at">b=</span><span class="dv">1</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">lwd=</span><span class="dv">2</span>)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>In lab today, we will dive into using R to understand the properties of the univariate distributions, but first we’ll take a short detour to discuss the Central Limit Theorem (or CLT).</p>
 </div>
@@ -769,55 +768,55 @@ s^{2} = \frac{(X-\bar{X})^{2}}{n-1}
 \lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{p(1-p)}{100} \right)
 \]</span>
 and therefore the standard error of the mean (i.e. the uncertainty in the mean of those 100 draws) is <span class="math inline">\(\sqrt{\frac{p(1-p)}{100}}\)</span>. We can code that experiment as follows:</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="week-3-lab.html#cb234-1" tabindex="-1"></a>mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
-<span id="cb234-2"><a href="week-3-lab.html#cb234-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
-<span id="cb234-3"><a href="week-3-lab.html#cb234-3" tabindex="-1"></a>{</span>
-<span id="cb234-4"><a href="week-3-lab.html#cb234-4" tabindex="-1"></a>  vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
-<span id="cb234-5"><a href="week-3-lab.html#cb234-5" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>)</span>
-<span id="cb234-6"><a href="week-3-lab.html#cb234-6" tabindex="-1"></a>    {</span>
-<span id="cb234-7"><a href="week-3-lab.html#cb234-7" tabindex="-1"></a>      flip_outcome<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
-<span id="cb234-8"><a href="week-3-lab.html#cb234-8" tabindex="-1"></a>      vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(vector_of_flip_outcomes,flip_outcome)</span>
-<span id="cb234-9"><a href="week-3-lab.html#cb234-9" tabindex="-1"></a>    }</span>
-<span id="cb234-10"><a href="week-3-lab.html#cb234-10" tabindex="-1"></a>  mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(mean_of_flip_outcomes,<span class="fu">mean</span>(vector_of_flip_outcomes))</span>
-<span id="cb234-11"><a href="week-3-lab.html#cb234-11" tabindex="-1"></a>}</span>
-<span id="cb234-12"><a href="week-3-lab.html#cb234-12" tabindex="-1"></a><span class="fu">hist</span>(mean_of_flip_outcomes,<span class="at">breaks=</span><span class="dv">30</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="week-3-lab.html#cb232-1" tabindex="-1"></a>mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
+<span id="cb232-2"><a href="week-3-lab.html#cb232-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb232-3"><a href="week-3-lab.html#cb232-3" tabindex="-1"></a>{</span>
+<span id="cb232-4"><a href="week-3-lab.html#cb232-4" tabindex="-1"></a>  vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
+<span id="cb232-5"><a href="week-3-lab.html#cb232-5" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>)</span>
+<span id="cb232-6"><a href="week-3-lab.html#cb232-6" tabindex="-1"></a>    {</span>
+<span id="cb232-7"><a href="week-3-lab.html#cb232-7" tabindex="-1"></a>      flip_outcome<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
+<span id="cb232-8"><a href="week-3-lab.html#cb232-8" tabindex="-1"></a>      vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(vector_of_flip_outcomes,flip_outcome)</span>
+<span id="cb232-9"><a href="week-3-lab.html#cb232-9" tabindex="-1"></a>    }</span>
+<span id="cb232-10"><a href="week-3-lab.html#cb232-10" tabindex="-1"></a>  mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(mean_of_flip_outcomes,<span class="fu">mean</span>(vector_of_flip_outcomes))</span>
+<span id="cb232-11"><a href="week-3-lab.html#cb232-11" tabindex="-1"></a>}</span>
+<span id="cb232-12"><a href="week-3-lab.html#cb232-12" tabindex="-1"></a><span class="fu">hist</span>(mean_of_flip_outcomes,<span class="at">breaks=</span><span class="dv">30</span>)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="week-3-lab.html#cb235-1" tabindex="-1"></a><span class="fu">sd</span>(mean_of_flip_outcomes)</span></code></pre></div>
-<pre><code>## [1] 0.0490398</code></pre>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="week-3-lab.html#cb233-1" tabindex="-1"></a><span class="fu">sd</span>(mean_of_flip_outcomes)</span></code></pre></div>
+<pre><code>## [1] 0.05026217</code></pre>
 <p>Notice that the standard error is what we would have expected.</p>
 <p>Now consider 100 draws from a Binomial distribution where each draw represents 5 coin flips. Each sample now represents the number of “heads” across the 5 flips and is in the set {0,1,2,3,4,5}. The CLT says that the mean of those 100 Binomial draws is as follows:</p>
 <p><span class="math display">\[
 \lim_{n\rightarrow\infty} S_{n} \rightarrow N \left( \mu,\frac{50p(1-p)}{100} \right)
 \]</span></p>
 <p>and therefore the standard error of the mean (i.e. the uncertainty in the mean of those 100 draws) is <span class="math inline">\(\sqrt{\frac{50p(1-p)}{100}}\)</span>.</p>
-<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="week-3-lab.html#cb237-1" tabindex="-1"></a>mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
-<span id="cb237-2"><a href="week-3-lab.html#cb237-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
-<span id="cb237-3"><a href="week-3-lab.html#cb237-3" tabindex="-1"></a>{</span>
-<span id="cb237-4"><a href="week-3-lab.html#cb237-4" tabindex="-1"></a>  vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
-<span id="cb237-5"><a href="week-3-lab.html#cb237-5" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>)</span>
-<span id="cb237-6"><a href="week-3-lab.html#cb237-6" tabindex="-1"></a>    {</span>
-<span id="cb237-7"><a href="week-3-lab.html#cb237-7" tabindex="-1"></a>      flip_outcome<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="dv">50</span>,<span class="fl">0.5</span>) <span class="co">#this is the only line that changed</span></span>
-<span id="cb237-8"><a href="week-3-lab.html#cb237-8" tabindex="-1"></a>      vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(vector_of_flip_outcomes,flip_outcome)</span>
-<span id="cb237-9"><a href="week-3-lab.html#cb237-9" tabindex="-1"></a>    }</span>
-<span id="cb237-10"><a href="week-3-lab.html#cb237-10" tabindex="-1"></a>  mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(mean_of_flip_outcomes,<span class="fu">mean</span>(vector_of_flip_outcomes))</span>
-<span id="cb237-11"><a href="week-3-lab.html#cb237-11" tabindex="-1"></a>}</span>
-<span id="cb237-12"><a href="week-3-lab.html#cb237-12" tabindex="-1"></a><span class="fu">hist</span>(mean_of_flip_outcomes,<span class="at">breaks=</span><span class="dv">30</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="week-3-lab.html#cb235-1" tabindex="-1"></a>mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
+<span id="cb235-2"><a href="week-3-lab.html#cb235-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb235-3"><a href="week-3-lab.html#cb235-3" tabindex="-1"></a>{</span>
+<span id="cb235-4"><a href="week-3-lab.html#cb235-4" tabindex="-1"></a>  vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
+<span id="cb235-5"><a href="week-3-lab.html#cb235-5" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>)</span>
+<span id="cb235-6"><a href="week-3-lab.html#cb235-6" tabindex="-1"></a>    {</span>
+<span id="cb235-7"><a href="week-3-lab.html#cb235-7" tabindex="-1"></a>      flip_outcome<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="dv">50</span>,<span class="fl">0.5</span>) <span class="co">#this is the only line that changed</span></span>
+<span id="cb235-8"><a href="week-3-lab.html#cb235-8" tabindex="-1"></a>      vector_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(vector_of_flip_outcomes,flip_outcome)</span>
+<span id="cb235-9"><a href="week-3-lab.html#cb235-9" tabindex="-1"></a>    }</span>
+<span id="cb235-10"><a href="week-3-lab.html#cb235-10" tabindex="-1"></a>  mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(mean_of_flip_outcomes,<span class="fu">mean</span>(vector_of_flip_outcomes))</span>
+<span id="cb235-11"><a href="week-3-lab.html#cb235-11" tabindex="-1"></a>}</span>
+<span id="cb235-12"><a href="week-3-lab.html#cb235-12" tabindex="-1"></a><span class="fu">hist</span>(mean_of_flip_outcomes,<span class="at">breaks=</span><span class="dv">30</span>)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
-<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="week-3-lab.html#cb238-1" tabindex="-1"></a><span class="fu">sd</span>(mean_of_flip_outcomes)</span></code></pre></div>
-<pre><code>## [1] 0.3411682</code></pre>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="week-3-lab.html#cb236-1" tabindex="-1"></a><span class="fu">sd</span>(mean_of_flip_outcomes)</span></code></pre></div>
+<pre><code>## [1] 0.3575999</code></pre>
 <p>Once again, the standard error is what we would have expected.</p>
 <p>Note that we could have written the code for this binomial experiment more compactly, as follows:</p>
-<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="week-3-lab.html#cb240-1" tabindex="-1"></a>mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
-<span id="cb240-2"><a href="week-3-lab.html#cb240-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
-<span id="cb240-3"><a href="week-3-lab.html#cb240-3" tabindex="-1"></a>{</span>
-<span id="cb240-4"><a href="week-3-lab.html#cb240-4" tabindex="-1"></a>  flip_outcome<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">100</span>,<span class="dv">50</span>,<span class="fl">0.5</span>) <span class="co">#here we are doing all 100 draws at once</span></span>
-<span id="cb240-5"><a href="week-3-lab.html#cb240-5" tabindex="-1"></a>  mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(mean_of_flip_outcomes,<span class="fu">mean</span>(flip_outcome))</span>
-<span id="cb240-6"><a href="week-3-lab.html#cb240-6" tabindex="-1"></a>}</span>
-<span id="cb240-7"><a href="week-3-lab.html#cb240-7" tabindex="-1"></a></span>
-<span id="cb240-8"><a href="week-3-lab.html#cb240-8" tabindex="-1"></a><span class="fu">hist</span>(mean_of_flip_outcomes,<span class="at">breaks=</span><span class="dv">30</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="week-3-lab.html#cb238-1" tabindex="-1"></a>mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>()</span>
+<span id="cb238-2"><a href="week-3-lab.html#cb238-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb238-3"><a href="week-3-lab.html#cb238-3" tabindex="-1"></a>{</span>
+<span id="cb238-4"><a href="week-3-lab.html#cb238-4" tabindex="-1"></a>  flip_outcome<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">100</span>,<span class="dv">50</span>,<span class="fl">0.5</span>) <span class="co">#here we are doing all 100 draws at once</span></span>
+<span id="cb238-5"><a href="week-3-lab.html#cb238-5" tabindex="-1"></a>  mean_of_flip_outcomes<span class="ot">&lt;-</span><span class="fu">c</span>(mean_of_flip_outcomes,<span class="fu">mean</span>(flip_outcome))</span>
+<span id="cb238-6"><a href="week-3-lab.html#cb238-6" tabindex="-1"></a>}</span>
+<span id="cb238-7"><a href="week-3-lab.html#cb238-7" tabindex="-1"></a></span>
+<span id="cb238-8"><a href="week-3-lab.html#cb238-8" tabindex="-1"></a><span class="fu">hist</span>(mean_of_flip_outcomes,<span class="at">breaks=</span><span class="dv">30</span>)</span></code></pre></div>
 <p><img src="Week-3-lab_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="week-3-lab.html#cb241-1" tabindex="-1"></a><span class="fu">sd</span>(mean_of_flip_outcomes)</span></code></pre></div>
-<pre><code>## [1] 0.3441763</code></pre>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="week-3-lab.html#cb239-1" tabindex="-1"></a><span class="fu">sd</span>(mean_of_flip_outcomes)</span></code></pre></div>
+<pre><code>## [1] 0.3424921</code></pre>
 <p>And again, our estimate of the standard error is what we expect.</p>
 <p>The key with Bernoulli and the Binomial is just being really clear on what <span class="math inline">\(\textit{n}\)</span> is, because we have 1) the number of coin flips in each experiment (this determines what the variance <span class="math inline">\(\sigma^2\)</span> is in the numerator part of the CLT) and 2) the number of experiments (which determines what the denominator is in the CLT).</p>
 <p>Finally, while the CLT is a very general statement, do not forget the requirements that the mean and standard deviation exist (i.e. are finite). The Cauchy distribution, which is used all the time in atomic physics but rarely in ecology, has NO MEAN and NO SD – therefore, the CLT would not apply.</p>

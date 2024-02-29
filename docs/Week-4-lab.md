@@ -164,13 +164,15 @@ points(1,4,pch='x',cex=2)
 
 <img src="Week-4-lab_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
-Now we can plot the likelihood "slices", which show cross sections across the search grid for fixed values of $\mu$ or $\sigma^{2}$.
+Now we can plot the likelihood "slices", which show cross sections across the search grid for fixed values of $\mu$ or $\sigma^{2}$. The right hand panels are just zoomed in versions of the left hand panels so you can see what the NLL function looks like in the vicinity of the MLE.
 
 
 ```r
-par(mfrow=c(1,2))
-plot(mu.test.values,likelihood.matrix[,max.element[2]],typ="b")
-plot(sigma2.test.values,likelihood.matrix[max.element[1],],typ="b")
+par(mfrow=c(2,2))
+plot(mu.test.values,likelihood.matrix[,max.element[2]],typ="b",col="darkred")
+plot(mu.test.values,likelihood.matrix[,max.element[2]],typ="b",xlim=c(0.5,1.5),ylim=c(2090,2160),col="darkred")
+plot(sigma2.test.values,likelihood.matrix[max.element[1],],typ="b",col="darkred")
+plot(sigma2.test.values,likelihood.matrix[max.element[1],],typ="b",xlim=c(3.5,4.5),,ylim=c(2080,2140),col="darkred")
 ```
 
 <img src="Week-4-lab_files/figure-html/unnamed-chunk-7-1.png" width="672" />
@@ -204,14 +206,14 @@ opt1
 
 ```
 ## $par
-## [1] 0.8681755 2.0192805
+## [1] 0.9712889 1.9587876
 ## 
 ## $value
-## [1] 2121.558
+## [1] 2091.31
 ## 
 ## $counts
 ## function gradient 
-##       63       NA 
+##       55       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -230,13 +232,13 @@ fitdistr(x,"normal")
 
 ```
 ##       mean          sd    
-##   0.86838977   2.01903475 
-##  (0.06384748) (0.04514699)
+##   0.97115469   1.95887774 
+##  (0.06194515) (0.04380184)
 ```
 
-Notice that this function outputs the SE as well, whereas our function and 'optim' only give the MLE. 
+Notice that this function outputs the SE as well, whereas our function and 'optim' only give the MLE. Note that we can use the SE provided by 'optim' to calculate a confidence interval. For example, the 95th percentile CI would be given by $(\mbox{MLE estimate} - 1.96*SE, \mbox{MLE estimate} + 1.96*SE)$. But notice that using the SE in this way yields symmetric confidence intervals (LL and UL both the same distance from the MLE) and yet we just showed above that the actual CI may be asymmetric (like it was for $\sigma$). This is because 'optim' is *approximating* the likelihood surface as a quadratic surface in the vicinity of the MLE, and this is only a good approximation if the likelihood surface is indeed quadratic and symmetric in the vicinity of the MLE. So 'optim''s assumption that the NLL profile is symmetric and well fit by a quadratic function is a reasonable function for the $\mu$ parameter but its a bad approximation for the $\sigma$ parameter. *When you are doing "mission critical" analysis for your research, it is better to find the correct CI by using the likelihood profile and not the SE provided by 'optim'.*
 
-The likelihood is a relative concept that only makes sense relative to other possible datasets. The absolute magnitude depends on the "sample space" of the data and sometimes even the maximum likelihood is a very small value. So all we can do is compare relative likelihoods. 
+Keep in mind that the likelihood is a relative concept that only makes sense relative to other possible datasets. The absolute magnitude depends on the "sample space" of the data and sometimes even the maximum likelihood is a very small value. So all we can do is compare relative likelihoods. 
 
 We now know how to use maximum likelihood to calculate the "best" parameter value (in the sense that it is the parameter value that maximizes the likelihood, or minimizes the negative log-likelihood.) But we know that parameter estimates by themselves are useless. We need to somehow calculate the uncertainty in our maximum likelihood estimate, i.e. the confidence interval.
 
@@ -261,7 +263,46 @@ qchisq(0.95,1)/2
 ## [1] 1.920729
 ```
 
-which equals 1.92 log-likelihood units if you are looking at only one parameter to be estimated. Therefore, if we have only one parameter, then we simply calculate the NLL over a range of parameter values, and find the CIs representing those parameter estimates which have <1.92 increase in NLL from the MLE.
+which equals 1.92 log-likelihood units if you are looking at only one parameter to be estimated. Therefore, if we have only one parameter, then we simply calculate the NLL over a range of parameter values, and find the CIs representing those parameter estimates which have <1.92 increase in NLL from the MLE. The correct cut-off (i.e. the "depth" of the water filling the NLL) depends on the number of parameters being estimated as well as the desired width of the CI. The Poisson distribution you will look at in the problem set has only a single parameter $\lambda$ but the Normal distribution has two parameters ($\mu$ and $\sigma$) and so we would use a different cut-off for these two distributions.
+
+
+<table style="width:90%; margin-left: auto; margin-right: auto;" class="table">
+<caption>(\#tab:unnamed-chunk-12)The difference between the minimum NLL at the MLE and the NLL associated with the upper and lower confidence interval limits.</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Parameters </th>
+   <th style="text-align:left;"> CI_90th </th>
+   <th style="text-align:left;"> CI_90th </th>
+   <th style="text-align:left;"> CI_90th </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> qchisq(0.90,1)/2 = 1.353 </td>
+   <td style="text-align:left;"> qchisq(0.95,1)/2 = 1.921 </td>
+   <td style="text-align:left;"> qchisq(0.99,1)/2 = 3.317 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> qchisq(0.90,2)/2 = 2.303 </td>
+   <td style="text-align:left;"> qchisq(0.95,2)/2 = 2.996 </td>
+   <td style="text-align:left;"> qchisq(0.99,2)/2 = 4.605 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> qchisq(0.90,3)/2 = 3.126 </td>
+   <td style="text-align:left;"> qchisq(0.95,3)/2 = 3.907 </td>
+   <td style="text-align:left;"> qchisq(0.99,3)/2 = 5.672 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> qchisq(0.90,4)/2 = 3.890 </td>
+   <td style="text-align:left;"> qchisq(0.95,4)/2 = 4.744 </td>
+   <td style="text-align:left;"> qchisq(0.99,4)/2 = 6.638 </td>
+  </tr>
+</tbody>
+</table>
 
 You will explore this more in the problem set. There is also more discussion of this in Bolker's Chapter #6. 
 
@@ -269,7 +310,7 @@ While the above method (finding the bounds on the parameter within which the inc
 
 <div class="figure" style="text-align: center">
 <img src="FisherInformationFigure.png" alt="Comparing steep and shallow NLL functions, and its impact on the estimated standard errors." width="100%" />
-<p class="caption">(\#fig:unnamed-chunk-12)Comparing steep and shallow NLL functions, and its impact on the estimated standard errors.</p>
+<p class="caption">(\#fig:unnamed-chunk-13)Comparing steep and shallow NLL functions, and its impact on the estimated standard errors.</p>
 </div>
 
 A large second derivative is associated with a steep curve in the NLL, and this results in a small standard error (does this make sense?). Conversely, a very flat NLL that gently slopes up would be associated with a large standard error. So, if "fitdistr" estimates the standard error, why not just create the confidence intervals using [MLE-1.96$\times$SE, MLE+1.96$\times$SE]? Well, you *could*, but this assumes that the NLL is symmetric around its minimum and that the confidence interval is correspondingly symmetric around the maximum likelihood estimate. For some parameters for some distributions, this assumption will be fine, but for other parameters this may be a poor assumption and so the confidence intervals created using the standard error will be only approximate (and the approximation may not be that accurate, especially if you want 90th or 50th percentile confidence intervals [do you see why the approximation gets worse as you estimate larger CI intervals?]). Using the NLL function directly in the manner described about involves no approximation and will always be more correct.

@@ -1,6 +1,9 @@
 Week 5 Lab
 =============
   
+t-test
+--------
+  
 To learn more about R`s functions for doing the hypothesis tests introduced on Tuesday, we will simulate some data. Simulating data with known properties is always the best way of exploring a statistical test before applying it to your own data. Although we could simulate data using the "rnorm" function, we will use the "mvrnorm" function from the MASS package so we can consider the role of correlation between the two samples.
 
 ```{r}
@@ -38,7 +41,7 @@ t.test(sample.a,sample.b)
 
 Notice that the degrees of freedom need not necessarily be an integer. R assumes unequal variances so we have to use the more complicated formula for the degrees of freedom. (In this situation, the number of degrees of freedom is not very intuitive; however, if you have $s_{A}^{2}=s_{B}^{2}$ and $n_{A}=n_{B}$, then the formula for the d.o.f. simplifies to 2n-2 which is what you would expect. )
 
-Because we are simulating data, everyone's output is going to look slightly different. In fact, some of us may get p<0.05 and others p>0.05. Here we are looking for a relatively small difference (compared to the standard deviations) with only 100 random draws. We would get more consistent results if we had larger sample sizes, larger mean differences, or smaller standard deviations. This touches on the very important question of statistical POWER, which we will discuss next week.
+Because we are simulating data, everyone's output is going to look slightly different. In fact, some of us may get p<0.05 and others p>0.05. Here we are looking for a relatively small difference (compared to the standard deviations) with only 100 random draws. We would get more consistent results if we had larger sample sizes, larger mean differences, or smaller standard deviations. 
 
 **<span style="color: green;">Checkpoint #1: The output of t.test includes 7 quantities - can you reproduce all 7 quantities based on what we learned on Tuesday?</span>**
 

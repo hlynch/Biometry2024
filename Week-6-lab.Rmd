@@ -9,7 +9,7 @@ First, we will simulate 10 groups of data (say, heights) from the *same* distrib
 data.all<-list()
 for (i in 1:10)
   {
-    data.all[[i]]<-rnorm(10)  #Note the double brackets for a list
+    data.all[[i]]<-rnorm(5)  #Note the double brackets for a list
   }
 ```
 

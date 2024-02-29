@@ -156,12 +156,14 @@ points(mu.test.values[max.element[1]],sigma2.test.values[max.element[2]],pch=16,
 points(1,4,pch='x',cex=2)
 ```
 
-Now we can plot the likelihood "slices", which show cross sections across the search grid for fixed values of $\mu$ or $\sigma^{2}$.
+Now we can plot the likelihood "slices", which show cross sections across the search grid for fixed values of $\mu$ or $\sigma^{2}$. The right hand panels are just zoomed in versions of the left hand panels so you can see what the NLL function looks like in the vicinity of the MLE.
 
 ```{r}
-par(mfrow=c(1,2))
-plot(mu.test.values,likelihood.matrix[,max.element[2]],typ="b")
-plot(sigma2.test.values,likelihood.matrix[max.element[1],],typ="b")
+par(mfrow=c(2,2))
+plot(mu.test.values,likelihood.matrix[,max.element[2]],typ="b",col="darkred")
+plot(mu.test.values,likelihood.matrix[,max.element[2]],typ="b",xlim=c(0.5,1.5),ylim=c(2090,2160),col="darkred")
+plot(sigma2.test.values,likelihood.matrix[max.element[1],],typ="b",col="darkred")
+plot(sigma2.test.values,likelihood.matrix[max.element[1],],typ="b",xlim=c(3.5,4.5),,ylim=c(2080,2140),col="darkred")
 ```
 
 Notice how the likelihood curve for $\sigma^{2}$ is not symmetric. While a horizontal line drawn at some higher value (which represents the likelihood of an alternative hypothesis) yields a fairly symmetric confidence interval for $\mu$, the assymetry of the likelihood surface yields a highly assymetric confidence interval for $\sigma^{2}$. Confidence intervals do not have to be symmetric! **However**, immediately in the vicinity of the minimum, the likelihood surface **is** approximately quadratic and symmetric. We will come back to this in a second.
@@ -196,9 +198,9 @@ library(MASS)
 fitdistr(x,"normal")
 ```
 
-Notice that this function outputs the SE as well, whereas our function and 'optim' only give the MLE. 
+Notice that this function outputs the SE as well, whereas our function and 'optim' only give the MLE. Note that we can use the SE provided by 'optim' to calculate a confidence interval. For example, the 95th percentile CI would be given by $(\mbox{MLE estimate} - 1.96*SE, \mbox{MLE estimate} + 1.96*SE)$. But notice that using the SE in this way yields symmetric confidence intervals (LL and UL both the same distance from the MLE) and yet we just showed above that the actual CI may be asymmetric (like it was for $\sigma$). This is because 'optim' is *approximating* the likelihood surface as a quadratic surface in the vicinity of the MLE, and this is only a good approximation if the likelihood surface is indeed quadratic and symmetric in the vicinity of the MLE. So 'optim''s assumption that the NLL profile is symmetric and well fit by a quadratic function is a reasonable function for the $\mu$ parameter but its a bad approximation for the $\sigma$ parameter. *When you are doing "mission critical" analysis for your research, it is better to find the correct CI by using the likelihood profile and not the SE provided by 'optim'.*
 
-The likelihood is a relative concept that only makes sense relative to other possible datasets. The absolute magnitude depends on the "sample space" of the data and sometimes even the maximum likelihood is a very small value. So all we can do is compare relative likelihoods. 
+Keep in mind that the likelihood is a relative concept that only makes sense relative to other possible datasets. The absolute magnitude depends on the "sample space" of the data and sometimes even the maximum likelihood is a very small value. So all we can do is compare relative likelihoods. 
 
 We now know how to use maximum likelihood to calculate the "best" parameter value (in the sense that it is the parameter value that maximizes the likelihood, or minimizes the negative log-likelihood.) But we know that parameter estimates by themselves are useless. We need to somehow calculate the uncertainty in our maximum likelihood estimate, i.e. the confidence interval.
 
@@ -218,7 +220,19 @@ Therefore, we can set a cut-off for the difference in log-likelihoods based on t
 qchisq(0.95,1)/2
 ```
 
-which equals 1.92 log-likelihood units if you are looking at only one parameter to be estimated. Therefore, if we have only one parameter, then we simply calculate the NLL over a range of parameter values, and find the CIs representing those parameter estimates which have <1.92 increase in NLL from the MLE.
+which equals 1.92 log-likelihood units if you are looking at only one parameter to be estimated. Therefore, if we have only one parameter, then we simply calculate the NLL over a range of parameter values, and find the CIs representing those parameter estimates which have <1.92 increase in NLL from the MLE. The correct cut-off (i.e. the "depth" of the water filling the NLL) depends on the number of parameters being estimated as well as the desired width of the CI. The Poisson distribution you will look at in the problem set has only a single parameter $\lambda$ but the Normal distribution has two parameters ($\mu$ and $\sigma$) and so we would use a different cut-off for these two distributions.
+
+
+```{r,echo=F}
+library(knitr)
+library(kableExtra)
+df <- data.frame(Parameters = c("1", "2","3", "4"), 
+                 "CI_90th" = c("qchisq(0.90,1)/2 = 1.353", "qchisq(0.90,2)/2 = 2.303","qchisq(0.90,3)/2 = 3.126","qchisq(0.90,4)/2 = 3.890"), 
+                 "CI_95th" = c("qchisq(0.95,1)/2 = 1.921", "qchisq(0.95,2)/2 = 2.996","qchisq(0.95,3)/2 = 3.907","qchisq(0.95,4)/2 = 4.744"),
+                 "CI_99th" = c("qchisq(0.99,1)/2 = 3.317", "qchisq(0.99,2)/2 = 4.605","qchisq(0.99,3)/2 = 5.672","qchisq(0.99,4)/2 = 6.638"))
+kable(df, col.names = c("Parameters", "CI_90th", "CI_90th","CI_90th"), escape = F, caption = "The difference between the minimum NLL at the MLE and the NLL associated with the upper and lower confidence interval limits.",table.attr = "style='width:90%;'") %>%
+  kable_styling(latex_options = "hold_position")
+```
 
 You will explore this more in the problem set. There is also more discussion of this in Bolker's Chapter #6. 
 
