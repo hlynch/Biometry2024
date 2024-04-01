@@ -382,6 +382,48 @@ $$
 
 Why does R do that? In the first case, you have a slope and an intercept, and R is comparing the model you have against an alternate model which includes only an intercept. When you have an intercept-only model, that intercept is going to be the mean $\bar{Y}$. (Does it make sense why that is?) However, when you have supressed the intercept, the original alternate model (intercept only) no longer makes sense. So R chooses a new alternate model which is one of just random noise with $\bar{Y}=0$. If we look at the expression above, the effect of this is to increase the residuals going into SSE and the total sum of squares SST. However, the increase in SST is generally larger than the increase in SSE, which means that the R2 actually increases. The bottom line is that funny things happy when you suppress the intercept and while the output (effect sizes and standard errors) is still perfectly valid, the metrics of model fit become different and the with-intercept and without-intercept models can no longer be compared sensibly.
 
+Centering the covariates
+---------------------
+
+So far we have taken the covariates as is and have used those in our linear model. That decision has some consequences that we will explore now. Let's use bootstrap to sample with replacement, and then look at how our estimates of the slope and intercept vary from one bootstrapped sample to the next.
+
+```{r}
+intercepts<-c()
+slopes<-c()
+for (i in 1:1000)
+{
+indices<-sample(seq(1,length(eruptions)),replace=T)
+bootstrapped.eruptions<-eruptions[indices]
+bootstrapped.waiting<-waiting[indices] 
+
+eruption.bs.lm<-lm(bootstrapped.eruptions~bootstrapped.waiting)
+intercepts<-c(intercepts,eruption.bs.lm$coefficients[1])
+slopes<-c(slopes,eruption.bs.lm$coefficients[2])
+}
+plot(slopes,intercepts)
+```
+
+The estimates of slope and intercept and highly correlated, because an increase in the slope will tend to decrease the intercept and vice versa. This is a consequence of the fact that the two parameters are estimated from the same data and in this case, an increase in the estimate of the slope has to drive a decrease in the intercept. (You can see this by looking back at the plot of the data. A steeper slope that goes through $(\bar{X},\bar{Y})$ has to have a smaller intercept.) This is not a problem per se, but it does mean that the estimates of the slope and intercept are not independent of each other. What happens if we redo the same bootstrapping exercise but center the covariate by subtracting the mean; this creates a new covariates that is centered on waiting=0.
+
+```{r}
+intercepts<-c()
+slopes<-c()
+for (i in 1:1000)
+{
+indices<-sample(seq(1,length(eruptions)),replace=T)
+bootstrapped.eruptions<-eruptions[indices]
+bootstrapped.waiting<-waiting[indices] - mean(waiting)
+
+eruption.bs.lm<-lm(bootstrapped.eruptions~bootstrapped.waiting)
+intercepts<-c(intercepts,eruption.bs.lm$coefficients[1])
+slopes<-c(slopes,eruption.bs.lm$coefficients[2])
+}
+plot(slopes,intercepts)
+```
+
+Note that by centering the covariate, we break the dependence of the slope and intercept estimates. If you are using 'optim' to fit the model (which lm() is doing under the hood anyways), centering the covariate in this way will make it easier for optim() to find the MLE estimates for slope and intercept, and it will make the estimates returned by optim() less sensitive to the starting values. As a general matter, it is a good idea to center your covariates (this is especially true when we get to regression with multiple covariates) before fitting your model. Just be sure to remember that you have done this as it changes the interpretation of the intercept (now the intercept reflect the value of the response at the mean value of the covariates).
+
+
 Weighted regression
 ---------------------
 

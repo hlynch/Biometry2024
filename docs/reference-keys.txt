@@ -154,6 +154,7 @@ W9FAQ
 week-9-lab
 correlation-1
 linear-modelling
+centering-the-covariates
 weighted-regression
 robust-regression-1
 bootstrapping-standard-errors-for-robust-regression

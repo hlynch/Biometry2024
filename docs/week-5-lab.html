@@ -23,7 +23,7 @@
 <meta name="author" content="Heather Lynch" />
 
 
-<meta name="date" content="2024-02-29" />
+<meta name="date" content="2024-04-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -310,10 +310,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="week-9-lab.html"><a href="week-9-lab.html#correlation-1"><i class="fa fa-check"></i><b>17.1</b> Correlation</a></li>
 <li class="chapter" data-level="17.2" data-path="week-9-lab.html"><a href="week-9-lab.html#linear-modelling"><i class="fa fa-check"></i><b>17.2</b> Linear modelling</a></li>
-<li class="chapter" data-level="17.3" data-path="week-9-lab.html"><a href="week-9-lab.html#weighted-regression"><i class="fa fa-check"></i><b>17.3</b> Weighted regression</a></li>
-<li class="chapter" data-level="17.4" data-path="week-9-lab.html"><a href="week-9-lab.html#robust-regression-1"><i class="fa fa-check"></i><b>17.4</b> Robust regression</a></li>
-<li class="chapter" data-level="17.5" data-path="week-9-lab.html"><a href="week-9-lab.html#bootstrapping-standard-errors-for-robust-regression"><i class="fa fa-check"></i><b>17.5</b> Bootstrapping standard errors for robust regression</a></li>
-<li class="chapter" data-level="17.6" data-path="week-9-lab.html"><a href="week-9-lab.html#type-i-vs.-type-ii-regression-the-smatr-package"><i class="fa fa-check"></i><b>17.6</b> Type I vs. Type II regression: The ‘smatr’ package</a></li>
+<li class="chapter" data-level="17.3" data-path="week-9-lab.html"><a href="week-9-lab.html#centering-the-covariates"><i class="fa fa-check"></i><b>17.3</b> Centering the covariates</a></li>
+<li class="chapter" data-level="17.4" data-path="week-9-lab.html"><a href="week-9-lab.html#weighted-regression"><i class="fa fa-check"></i><b>17.4</b> Weighted regression</a></li>
+<li class="chapter" data-level="17.5" data-path="week-9-lab.html"><a href="week-9-lab.html#robust-regression-1"><i class="fa fa-check"></i><b>17.5</b> Robust regression</a></li>
+<li class="chapter" data-level="17.6" data-path="week-9-lab.html"><a href="week-9-lab.html#bootstrapping-standard-errors-for-robust-regression"><i class="fa fa-check"></i><b>17.6</b> Bootstrapping standard errors for robust regression</a></li>
+<li class="chapter" data-level="17.7" data-path="week-9-lab.html"><a href="week-9-lab.html#type-i-vs.-type-ii-regression-the-smatr-package"><i class="fa fa-check"></i><b>17.7</b> Type I vs. Type II regression: The ‘smatr’ package</a></li>
 </ul></li>
 <li class="chapter" data-level="18" data-path="week-10-lecture.html"><a href="week-10-lecture.html"><i class="fa fa-check"></i><b>18</b> Week 10 Lecture</a>
 <ul>
@@ -483,8 +484,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="t-test" class="section level2 hasAnchor" number="10.1">
 <h2><span class="header-section-number">10.1</span> t-test<a href="week-5-lab.html#t-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To learn more about R`s functions for doing the hypothesis tests introduced on Tuesday, we will simulate some data. Simulating data with known properties is always the best way of exploring a statistical test before applying it to your own data. Although we could simulate data using the “rnorm” function, we will use the “mvrnorm” function from the MASS package so we can consider the role of correlation between the two samples.</p>
-<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="week-5-lab.html#cb256-1" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb256-2"><a href="week-5-lab.html#cb256-2" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">mvrnorm</span>(<span class="at">n=</span><span class="dv">100</span>,<span class="fu">c</span>(<span class="dv">1</span>,<span class="fl">1.2</span>),<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">3</span>),<span class="dv">2</span>,<span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="week-5-lab.html#cb254-1" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb254-2"><a href="week-5-lab.html#cb254-2" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">mvrnorm</span>(<span class="at">n=</span><span class="dv">100</span>,<span class="fu">c</span>(<span class="dv">1</span>,<span class="fl">1.2</span>),<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">3</span>),<span class="dv">2</span>,<span class="dv">2</span>))</span></code></pre></div>
 <p>The call here is similar to the one used for rnorm except now we are drawing two samples at the same time with the following properties:</p>
 <p><span class="math display">\[
 \left[ \begin{array}{c}
@@ -496,24 +497,24 @@ Cov(A,A) &amp; Cov(A,B)   \\
 Cov(A,B) &amp; Cov(B,B) \end{array}\right)\right)
 \]</span></p>
 <p>Note that the variances have to be non-negative, and because Cov(A,B)=Cov(B,A), the covariance matrix has to be symmetric. (CAREFUL: mvrnorm does not enforce this!)</p>
-<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="week-5-lab.html#cb257-1" tabindex="-1"></a>sample.a<span class="ot">&lt;-</span>data[,<span class="dv">1</span>]</span>
-<span id="cb257-2"><a href="week-5-lab.html#cb257-2" tabindex="-1"></a>sample.b<span class="ot">&lt;-</span>data[,<span class="dv">2</span>]</span>
-<span id="cb257-3"><a href="week-5-lab.html#cb257-3" tabindex="-1"></a><span class="fu">plot</span>(sample.a,sample.b)</span></code></pre></div>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="week-5-lab.html#cb255-1" tabindex="-1"></a>sample.a<span class="ot">&lt;-</span>data[,<span class="dv">1</span>]</span>
+<span id="cb255-2"><a href="week-5-lab.html#cb255-2" tabindex="-1"></a>sample.b<span class="ot">&lt;-</span>data[,<span class="dv">2</span>]</span>
+<span id="cb255-3"><a href="week-5-lab.html#cb255-3" tabindex="-1"></a><span class="fu">plot</span>(sample.a,sample.b)</span></code></pre></div>
 <p><img src="Week-5-lab_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Notice that because Cov<span class="math inline">\((X_{A},X_{B})\)</span>=0, the scatterplot has no trend.</p>
 <p>The t-test will answer the question, “Can we reject the null hypothesis that these two populations have the same mean”?</p>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="week-5-lab.html#cb258-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b)</span></code></pre></div>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="week-5-lab.html#cb256-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b)</span></code></pre></div>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample.a and sample.b
-## t = -1.457, df = 195.42, p-value = 0.1467
+## t = 0.7491, df = 197.81, p-value = 0.4547
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.9179162  0.1379128
+##  -0.3108335  0.6916329
 ## sample estimates:
 ## mean of x mean of y 
-## 0.9744659 1.3644676</code></pre>
+## 1.1667366 0.9763369</code></pre>
 <p>Notice that the degrees of freedom need not necessarily be an integer. R assumes unequal variances so we have to use the more complicated formula for the degrees of freedom. (In this situation, the number of degrees of freedom is not very intuitive; however, if you have <span class="math inline">\(s_{A}^{2}=s_{B}^{2}\)</span> and <span class="math inline">\(n_{A}=n_{B}\)</span>, then the formula for the d.o.f. simplifies to 2n-2 which is what you would expect. )</p>
 <p>Because we are simulating data, everyone’s output is going to look slightly different. In fact, some of us may get p&lt;0.05 and others p&gt;0.05. Here we are looking for a relatively small difference (compared to the standard deviations) with only 100 random draws. We would get more consistent results if we had larger sample sizes, larger mean differences, or smaller standard deviations.</p>
 <p><strong><span style="color: green;">Checkpoint #1: The output of t.test includes 7 quantities - can you reproduce all 7 quantities based on what we learned on Tuesday?</span></strong></p>
@@ -532,86 +533,86 @@ H_{A}:\mu_{1}&gt;\mu_{2}
 H_{A}:\mu_{1}&lt;\mu_{2}
 \]</span></p>
 <p>by using the options</p>
-<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="week-5-lab.html#cb260-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">alternative=</span><span class="st">&quot;greater&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="week-5-lab.html#cb258-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">alternative=</span><span class="st">&quot;greater&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample.a and sample.b
-## t = -1.457, df = 195.42, p-value = 0.9266
+## t = 0.7491, df = 197.81, p-value = 0.2273
 ## alternative hypothesis: true difference in means is greater than 0
 ## 95 percent confidence interval:
-##  -0.832395       Inf
+##  -0.2296421        Inf
 ## sample estimates:
 ## mean of x mean of y 
-## 0.9744659 1.3644676</code></pre>
-<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="week-5-lab.html#cb262-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">alternative=</span><span class="st">&quot;less&quot;</span>)</span></code></pre></div>
+## 1.1667366 0.9763369</code></pre>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="week-5-lab.html#cb260-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">alternative=</span><span class="st">&quot;less&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample.a and sample.b
-## t = -1.457, df = 195.42, p-value = 0.07337
+## t = 0.7491, df = 197.81, p-value = 0.7727
 ## alternative hypothesis: true difference in means is less than 0
 ## 95 percent confidence interval:
-##        -Inf 0.05239161
+##       -Inf 0.6104415
 ## sample estimates:
 ## mean of x mean of y 
-## 0.9744659 1.3644676</code></pre>
+## 1.1667366 0.9763369</code></pre>
 <p>Try both of these options and see how the p-value and the confidence intervals change. Make sure you understand why they make sense. Remember, if you are going to use a one-tailed test, you should be prepared to accept that a large difference opposite to what was expected is pure random chance.</p>
 <p>Spend some time going back and experimenting with different sets of random variables. Make the means more or less different. Change the variances. Make sure you understand why the t-test results change as you alter the data. <strong><span style="color: green;">Checkpoint #2: What happens if you make the sample sizes smaller or larger?</span></strong></p>
 <p>Now let’s see what happens when we simulate a new dataset with correlations between the two samples.</p>
-<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="week-5-lab.html#cb264-1" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">mvrnorm</span>(<span class="at">n=</span><span class="dv">100</span>,<span class="fu">c</span>(<span class="dv">1</span>,<span class="fl">1.2</span>),<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>),<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb264-2"><a href="week-5-lab.html#cb264-2" tabindex="-1"></a>sample.a<span class="ot">&lt;-</span>data[,<span class="dv">1</span>]</span>
-<span id="cb264-3"><a href="week-5-lab.html#cb264-3" tabindex="-1"></a>sample.b<span class="ot">&lt;-</span>data[,<span class="dv">2</span>]</span>
-<span id="cb264-4"><a href="week-5-lab.html#cb264-4" tabindex="-1"></a><span class="fu">plot</span>(sample.a,sample.b)</span></code></pre></div>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="week-5-lab.html#cb262-1" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">mvrnorm</span>(<span class="at">n=</span><span class="dv">100</span>,<span class="fu">c</span>(<span class="dv">1</span>,<span class="fl">1.2</span>),<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>),<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb262-2"><a href="week-5-lab.html#cb262-2" tabindex="-1"></a>sample.a<span class="ot">&lt;-</span>data[,<span class="dv">1</span>]</span>
+<span id="cb262-3"><a href="week-5-lab.html#cb262-3" tabindex="-1"></a>sample.b<span class="ot">&lt;-</span>data[,<span class="dv">2</span>]</span>
+<span id="cb262-4"><a href="week-5-lab.html#cb262-4" tabindex="-1"></a><span class="fu">plot</span>(sample.a,sample.b)</span></code></pre></div>
 <p><img src="Week-5-lab_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Notice that now the two samples are positively correlated.</p>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="week-5-lab.html#cb265-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">paired=</span>T)</span></code></pre></div>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="week-5-lab.html#cb263-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">paired=</span>T)</span></code></pre></div>
 <pre><code>## 
 ##  Paired t-test
 ## 
 ## data:  sample.a and sample.b
-## t = -0.32708, df = 99, p-value = 0.7443
+## t = -0.70233, df = 99, p-value = 0.4841
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.3205992  0.2298600
+##  -0.3420054  0.1631881
 ## sample estimates:
 ## mean of the differences 
-##             -0.04536961</code></pre>
+##             -0.08940864</code></pre>
 <p>Compare this with</p>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="week-5-lab.html#cb267-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">paired=</span>F)</span></code></pre></div>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="week-5-lab.html#cb265-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b,<span class="at">paired=</span>F)</span></code></pre></div>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample.a and sample.b
-## t = -0.19587, df = 197.99, p-value = 0.8449
+## t = -0.37918, df = 194.87, p-value = 0.705
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.5021529  0.4114137
+##  -0.5544505  0.3756332
 ## sample estimates:
 ## mean of x mean of y 
-## 0.9455027 0.9908723</code></pre>
+##  1.166717  1.256126</code></pre>
 <p>which is the same as</p>
-<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="week-5-lab.html#cb269-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b)</span></code></pre></div>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="week-5-lab.html#cb267-1" tabindex="-1"></a><span class="fu">t.test</span>(sample.a,sample.b)</span></code></pre></div>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  sample.a and sample.b
-## t = -0.19587, df = 197.99, p-value = 0.8449
+## t = -0.37918, df = 194.87, p-value = 0.705
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.5021529  0.4114137
+##  -0.5544505  0.3756332
 ## sample estimates:
 ## mean of x mean of y 
-## 0.9455027 0.9908723</code></pre>
+##  1.166717  1.256126</code></pre>
 <p>since the default is to assume unpaired samples.</p>
 <p>To convince ourselves of the formulas we learned for paired t-tests, we will define a new variable</p>
-<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="week-5-lab.html#cb271-1" tabindex="-1"></a>z<span class="ot">&lt;-</span>sample.a<span class="sc">-</span>sample.b</span>
-<span id="cb271-2"><a href="week-5-lab.html#cb271-2" tabindex="-1"></a><span class="fu">mean</span>(z)</span></code></pre></div>
-<pre><code>## [1] -0.04536961</code></pre>
-<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="week-5-lab.html#cb273-1" tabindex="-1"></a><span class="fu">var</span>(z)</span></code></pre></div>
-<pre><code>## [1] 1.92403</code></pre>
-<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="week-5-lab.html#cb275-1" tabindex="-1"></a><span class="fu">var</span>(sample.a)<span class="sc">+</span><span class="fu">var</span>(sample.b)<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span><span class="fu">cov</span>(sample.a,sample.b)</span></code></pre></div>
-<pre><code>## [1] 1.92403</code></pre>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="week-5-lab.html#cb269-1" tabindex="-1"></a>z<span class="ot">&lt;-</span>sample.a<span class="sc">-</span>sample.b</span>
+<span id="cb269-2"><a href="week-5-lab.html#cb269-2" tabindex="-1"></a><span class="fu">mean</span>(z)</span></code></pre></div>
+<pre><code>## [1] -0.08940864</code></pre>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="week-5-lab.html#cb271-1" tabindex="-1"></a><span class="fu">var</span>(z)</span></code></pre></div>
+<pre><code>## [1] 1.620605</code></pre>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="week-5-lab.html#cb273-1" tabindex="-1"></a><span class="fu">var</span>(sample.a)<span class="sc">+</span><span class="fu">var</span>(sample.b)<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span><span class="fu">cov</span>(sample.a,sample.b)</span></code></pre></div>
+<pre><code>## [1] 1.620605</code></pre>
 <p>Spend some time going back and experimenting with different sets of random variables. In particular, change the covariances (makign sure that the covariance matrix is symmetric and the variances positive). Make sure you understand why the t-test results change as you alter the data. <strong><span style="color: green;">Checkpoint #3: What happens to the t-test results when you make the correlation weak?</span></strong></p>
 </div>
 <div id="f-test" class="section level2 hasAnchor" number="10.2">
@@ -654,48 +655,48 @@ H_{\mbox{A implied}}: \sigma_{A}^{2} &lt; \sigma_{B}^{2}
 \]</span></p>
 <p>In other words, because the F-distribution is always non-negative, it is easier to put the larger sample variance in the numerator to create a test statistic <span class="math inline">\(T^{*}&gt;1\)</span> and then compare that to <span class="math inline">\(F_{[1-\frac{\alpha}{2}](n-1,m-1)}\)</span> than it is to worry about computing both critical values (one for a ratio <span class="math inline">\(&lt;1\)</span> and a separate one for a ratio <span class="math inline">\(&gt;1\)</span>).</p>
 <p>Let’s explore this by simulating some data</p>
-<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="week-5-lab.html#cb277-1" tabindex="-1"></a>sample.a<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="at">mean=</span><span class="dv">5</span>,<span class="at">sd=</span><span class="dv">4</span>)</span>
-<span id="cb277-2"><a href="week-5-lab.html#cb277-2" tabindex="-1"></a>sample.b<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="at">mean=</span><span class="dv">2</span>,<span class="at">sd=</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="week-5-lab.html#cb275-1" tabindex="-1"></a>sample.a<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="at">mean=</span><span class="dv">5</span>,<span class="at">sd=</span><span class="dv">4</span>)</span>
+<span id="cb275-2"><a href="week-5-lab.html#cb275-2" tabindex="-1"></a>sample.b<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="at">mean=</span><span class="dv">2</span>,<span class="at">sd=</span><span class="dv">3</span>)</span></code></pre></div>
 <p>Lets assume we are only interested in the implied alternative hypothesis</p>
 <p><span class="math display">\[
 H_{A implied}: \sigma_{A}^{2} &gt; \sigma_{B}^{2}
 \]</span></p>
 <p>We can calculate this one-tailed F-test by hand first</p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="week-5-lab.html#cb278-1" tabindex="-1"></a>var.A<span class="ot">&lt;-</span><span class="fu">var</span>(sample.a)</span>
-<span id="cb278-2"><a href="week-5-lab.html#cb278-2" tabindex="-1"></a>var.B<span class="ot">&lt;-</span><span class="fu">var</span>(sample.b)</span>
-<span id="cb278-3"><a href="week-5-lab.html#cb278-3" tabindex="-1"></a>F.ratio<span class="ot">&lt;-</span>var.A<span class="sc">/</span>var.B </span>
-<span id="cb278-4"><a href="week-5-lab.html#cb278-4" tabindex="-1"></a>F.ratio</span></code></pre></div>
-<pre><code>## [1] 1.736137</code></pre>
+<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="week-5-lab.html#cb276-1" tabindex="-1"></a>var.A<span class="ot">&lt;-</span><span class="fu">var</span>(sample.a)</span>
+<span id="cb276-2"><a href="week-5-lab.html#cb276-2" tabindex="-1"></a>var.B<span class="ot">&lt;-</span><span class="fu">var</span>(sample.b)</span>
+<span id="cb276-3"><a href="week-5-lab.html#cb276-3" tabindex="-1"></a>F.ratio<span class="ot">&lt;-</span>var.A<span class="sc">/</span>var.B </span>
+<span id="cb276-4"><a href="week-5-lab.html#cb276-4" tabindex="-1"></a>F.ratio</span></code></pre></div>
+<pre><code>## [1] 1.73414</code></pre>
 <p>Note that we didn’t check that var.A was actually bigger than var.B. Because we are only interested in a one-tailed test, we want var.A in the numerator and we will compare that to the right-hand side of the F-distribution.</p>
 <p>Now we know what the F-ratio of our simulated data is, but we don’t know what the critical value of the test statistic is for the ratio to be considered “significant”.</p>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="week-5-lab.html#cb280-1" tabindex="-1"></a><span class="fu">qf</span>(<span class="at">p=</span><span class="fl">0.95</span>,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb278-1"><a href="week-5-lab.html#cb278-1" tabindex="-1"></a><span class="fu">qf</span>(<span class="at">p=</span><span class="fl">0.95</span>,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)</span></code></pre></div>
 <pre><code>## [1] 1.394061</code></pre>
 <p><strong><span style="color: green;">Checkpoint #4: Do you understand why df1=99 and df2=99?</span></strong></p>
 <p>We see that the F-ratio for our data is greater than the critical value for the 95th percentile. Therefore we can say that the two samples are unlikely to come from populations from the same variance. We can also flip the question around to ask: “What is the probability of obtaining this F-ratio if the null hypothesis were true?”</p>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="week-5-lab.html#cb282-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pf</span>(F.ratio,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)</span></code></pre></div>
-<pre><code>## [1] 0.003258736</code></pre>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb280-1"><a href="week-5-lab.html#cb280-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pf</span>(F.ratio,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)</span></code></pre></div>
+<pre><code>## [1] 0.003314422</code></pre>
 <p>and we see that it is small (&lt;0.05).</p>
 <p>Remember, pf gives the cumulative probability of getting any value less than or equal to the percentile being queried, so 1-pf gives the probability of getting a value as or more extreme.</p>
 <p>R gives us an easier way to test equality of variances (the F test):</p>
-<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="week-5-lab.html#cb284-1" tabindex="-1"></a><span class="fu">var.test</span>(sample.a,sample.b)</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb282-1"><a href="week-5-lab.html#cb282-1" tabindex="-1"></a><span class="fu">var.test</span>(sample.a,sample.b)</span></code></pre></div>
 <pre><code>## 
 ##  F test to compare two variances
 ## 
 ## data:  sample.a and sample.b
-## F = 1.7361, num df = 99, denom df = 99, p-value = 0.006517
+## F = 1.7341, num df = 99, denom df = 99, p-value = 0.006629
 ## alternative hypothesis: true ratio of variances is not equal to 1
 ## 95 percent confidence interval:
-##  1.168146 2.580306
+##  1.166802 2.577338
 ## sample estimates:
 ## ratio of variances 
-##           1.736137</code></pre>
+##            1.73414</code></pre>
 <p>The output of var.test includes 7 quantities - make sure you can calculate each and every one of these quantities.</p>
 <p>How did R arrive at its p-value? Notice that it is twice what we calculated when doing the F-test by hand. The reason is that R’s default is to do a two-sided test, and we only calculated the probability that you got a ratio as big or larger than the <span class="math inline">\(F^{*}\)</span>. You can get the two-tailed probability by either doubling that value or by adding the probability that you would get an F-ratio smaller than 1/<span class="math inline">\(F^{*}\)</span>.</p>
 <p>Notice also that to get the confidence intervals on the F-ratio, you multiply by the quantiles of the F-distribution.</p>
-<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="week-5-lab.html#cb286-1" tabindex="-1"></a><span class="fu">qf</span>(<span class="fl">0.025</span>,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)<span class="sc">*</span>F.ratio</span></code></pre></div>
-<pre><code>## [1] 1.168146</code></pre>
-<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="week-5-lab.html#cb288-1" tabindex="-1"></a><span class="fu">qf</span>(<span class="fl">0.975</span>,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)<span class="sc">*</span>F.ratio</span></code></pre></div>
-<pre><code>## [1] 2.580306</code></pre>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="week-5-lab.html#cb284-1" tabindex="-1"></a><span class="fu">qf</span>(<span class="fl">0.025</span>,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)<span class="sc">*</span>F.ratio</span></code></pre></div>
+<pre><code>## [1] 1.166802</code></pre>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="week-5-lab.html#cb286-1" tabindex="-1"></a><span class="fu">qf</span>(<span class="fl">0.975</span>,<span class="at">df1=</span><span class="dv">99</span>,<span class="at">df2=</span><span class="dv">99</span>)<span class="sc">*</span>F.ratio</span></code></pre></div>
+<pre><code>## [1] 2.577338</code></pre>
 </div>
 <div id="comparing-two-proportions-1" class="section level2 hasAnchor" number="10.3">
 <h2><span class="header-section-number">10.3</span> Comparing two proportions<a href="week-5-lab.html#comparing-two-proportions-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -719,35 +720,35 @@ P\left(\hat{p}-z_{1-(\alpha/2)}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}\leq \theta \l
 <p>However, if you look at the score test, you see that it is quite difficult to invert and isolate <span class="math inline">\(\hat{p}\)</span>. This is why the confidence intervals for the score test are so complicated. We will not go into more detail here because in practice you would not be calculating it by hand anyways (but the general idea behind inverting the test to get a CI should be clear!).</p>
 <p>We will now explore R’s functions for estimating the probability <span class="math inline">\(\hat{p}\)</span> (and its confidence interval) for a binomial distribution.</p>
 <p>First we simulate some data to work with</p>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="week-5-lab.html#cb290-1" tabindex="-1"></a>heads<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span><span class="fl">0.5</span>)</span>
-<span id="cb290-2"><a href="week-5-lab.html#cb290-2" tabindex="-1"></a>heads</span></code></pre></div>
-<pre><code>## [1] 53</code></pre>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="week-5-lab.html#cb288-1" tabindex="-1"></a>heads<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">1</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span><span class="fl">0.5</span>)</span>
+<span id="cb288-2"><a href="week-5-lab.html#cb288-2" tabindex="-1"></a>heads</span></code></pre></div>
+<pre><code>## [1] 49</code></pre>
 <p>Now we will use R’s function for the proportion test</p>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="week-5-lab.html#cb292-1" tabindex="-1"></a><span class="fu">prop.test</span>(heads,<span class="dv">100</span>) <span class="co">#continuity correction true by default</span></span></code></pre></div>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="week-5-lab.html#cb290-1" tabindex="-1"></a><span class="fu">prop.test</span>(heads,<span class="dv">100</span>) <span class="co">#continuity correction true by default</span></span></code></pre></div>
 <pre><code>## 
 ##  1-sample proportions test with continuity correction
 ## 
 ## data:  heads out of 100, null probability 0.5
-## X-squared = 0.25, df = 1, p-value = 0.6171
+## X-squared = 0.01, df = 1, p-value = 0.9203
 ## alternative hypothesis: true p is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.4280225 0.6296465
+##  0.3894281 0.5913488
 ## sample estimates:
 ##    p 
-## 0.53</code></pre>
+## 0.49</code></pre>
 <p>The continuity correction is used because we are approximating a discrete distribution (the binomial) with its normal approximation. While generally recommended, it rarely makes a large difference and for transparency I suggest we turn it off.</p>
-<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="week-5-lab.html#cb294-1" tabindex="-1"></a><span class="fu">prop.test</span>(heads,<span class="dv">100</span>,<span class="at">correct=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="week-5-lab.html#cb292-1" tabindex="-1"></a><span class="fu">prop.test</span>(heads,<span class="dv">100</span>,<span class="at">correct=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>## 
 ##  1-sample proportions test without continuity correction
 ## 
 ## data:  heads out of 100, null probability 0.5
-## X-squared = 0.36, df = 1, p-value = 0.5485
+## X-squared = 0.04, df = 1, p-value = 0.8415
 ## alternative hypothesis: true p is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.4328886 0.6248918
+##  0.3942200 0.5865199
 ## sample estimates:
 ##    p 
-## 0.53</code></pre>
+## 0.49</code></pre>
 <p>To make sure we understand this, let’s look at the help file for prop.test</p>
 <pre><code>?prop.test</code></pre>
 <p>There are a couple of additional pieces of information you need to understand and/or reconstruct the output for prop.test, and unfortunately the help file for this function is fairly unhelpful.</p>
@@ -767,247 +768,247 @@ X \sim N(0,1)
 X^{2} \sim \chi^{2}_{1}
 \]</span></p>
 <p>Therefore, the test statistic output by prop.test (assuming <span class="math inline">\(H_{0}: \theta_{0}=0.5\)</span>) is</p>
-<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="week-5-lab.html#cb297-1" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">100</span></span>
-<span id="cb297-2"><a href="week-5-lab.html#cb297-2" tabindex="-1"></a>theta0<span class="ot">&lt;-</span><span class="fl">0.5</span></span>
-<span id="cb297-3"><a href="week-5-lab.html#cb297-3" tabindex="-1"></a>test.statistic<span class="ot">&lt;-</span>(((heads<span class="sc">/</span>n)<span class="sc">-</span>theta0)<span class="sc">/</span>(<span class="fu">sqrt</span>(theta0<span class="sc">*</span>theta0<span class="sc">/</span>n)))<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb297-4"><a href="week-5-lab.html#cb297-4" tabindex="-1"></a>test.statistic</span></code></pre></div>
-<pre><code>## [1] 0.36</code></pre>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="week-5-lab.html#cb295-1" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">100</span></span>
+<span id="cb295-2"><a href="week-5-lab.html#cb295-2" tabindex="-1"></a>theta0<span class="ot">&lt;-</span><span class="fl">0.5</span></span>
+<span id="cb295-3"><a href="week-5-lab.html#cb295-3" tabindex="-1"></a>test.statistic<span class="ot">&lt;-</span>(((heads<span class="sc">/</span>n)<span class="sc">-</span>theta0)<span class="sc">/</span>(<span class="fu">sqrt</span>(theta0<span class="sc">*</span>theta0<span class="sc">/</span>n)))<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb295-4"><a href="week-5-lab.html#cb295-4" tabindex="-1"></a>test.statistic</span></code></pre></div>
+<pre><code>## [1] 0.04</code></pre>
 <p>and the p-value is given by</p>
-<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="week-5-lab.html#cb299-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(test.statistic,<span class="at">df=</span><span class="dv">1</span>)</span></code></pre></div>
-<pre><code>## [1] 0.5485062</code></pre>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="week-5-lab.html#cb297-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(test.statistic,<span class="at">df=</span><span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## [1] 0.8414806</code></pre>
 <p>Notice that because <span class="math inline">\(X^{2}\)</span> is always positive, the test is a one-tailed test (“extreme” values of this test statistic are always large and <strong>positive</strong>). We could get the same result comparing the original (non-squared) test statistic against the Standard Normal, as long as you make sure to do the two-tailed test (“extreme” for X includes large and positive <strong>and</strong> large and negative).</p>
-<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="week-5-lab.html#cb301-1" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(<span class="fu">sqrt</span>(test.statistic)))</span></code></pre></div>
-<pre><code>## [1] 0.5485062</code></pre>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="week-5-lab.html#cb299-1" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(<span class="fu">sqrt</span>(test.statistic)))</span></code></pre></div>
+<pre><code>## [1] 0.8414806</code></pre>
 <ul>
 <li>Notice in the helpfile that R will return a clipped version of the confidence interval, so the confidence interval is bounded [0,1].</li>
 </ul>
 <p>There is another function in R called “binom.test” which does an “exact test” based on the actual binomial distribution, rather than the normal approximation to it we introduced on Tuesday. Notice that there is no continuity correction because we are not approximating the binomial distribution with the normal distribution.</p>
-<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="week-5-lab.html#cb303-1" tabindex="-1"></a><span class="fu">binom.test</span>(heads,<span class="dv">100</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="week-5-lab.html#cb301-1" tabindex="-1"></a><span class="fu">binom.test</span>(heads,<span class="dv">100</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Exact binomial test
 ## 
 ## data:  heads and 100
-## number of successes = 53, number of trials = 100, p-value = 0.6173
+## number of successes = 49, number of trials = 100, p-value = 0.9204
 ## alternative hypothesis: true probability of success is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.4275815 0.6305948
+##  0.3886442 0.5919637
 ## sample estimates:
 ## probability of success 
-##                   0.53</code></pre>
+##                   0.49</code></pre>
 <p>One of the caveats in using the Wald method for binomial proportion is that it can give unrealistic values for the CIs when the underlying probability is very close to either 0 or 1 (especially if the sample size is small).</p>
 <p>To see this, lets calculate the Wald confidence intervals by hand assuming we got 2 successes out of 100 trials.</p>
-<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="week-5-lab.html#cb305-1" tabindex="-1"></a>p.hat<span class="ot">&lt;-</span><span class="dv">2</span><span class="sc">/</span><span class="dv">100</span></span>
-<span id="cb305-2"><a href="week-5-lab.html#cb305-2" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">100</span></span>
-<span id="cb305-3"><a href="week-5-lab.html#cb305-3" tabindex="-1"></a>se<span class="ot">&lt;-</span><span class="fu">sqrt</span>(p.hat<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p.hat)<span class="sc">/</span>n)</span>
-<span id="cb305-4"><a href="week-5-lab.html#cb305-4" tabindex="-1"></a>z<span class="ot">&lt;-</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
-<span id="cb305-5"><a href="week-5-lab.html#cb305-5" tabindex="-1"></a>LL<span class="ot">&lt;-</span>p.hat<span class="sc">-</span>se<span class="sc">*</span>z</span>
-<span id="cb305-6"><a href="week-5-lab.html#cb305-6" tabindex="-1"></a>UL<span class="ot">&lt;-</span>p.hat<span class="sc">+</span>se<span class="sc">*</span>z</span>
-<span id="cb305-7"><a href="week-5-lab.html#cb305-7" tabindex="-1"></a>LL</span></code></pre></div>
+<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="week-5-lab.html#cb303-1" tabindex="-1"></a>p.hat<span class="ot">&lt;-</span><span class="dv">2</span><span class="sc">/</span><span class="dv">100</span></span>
+<span id="cb303-2"><a href="week-5-lab.html#cb303-2" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">100</span></span>
+<span id="cb303-3"><a href="week-5-lab.html#cb303-3" tabindex="-1"></a>se<span class="ot">&lt;-</span><span class="fu">sqrt</span>(p.hat<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p.hat)<span class="sc">/</span>n)</span>
+<span id="cb303-4"><a href="week-5-lab.html#cb303-4" tabindex="-1"></a>z<span class="ot">&lt;-</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb303-5"><a href="week-5-lab.html#cb303-5" tabindex="-1"></a>LL<span class="ot">&lt;-</span>p.hat<span class="sc">-</span>se<span class="sc">*</span>z</span>
+<span id="cb303-6"><a href="week-5-lab.html#cb303-6" tabindex="-1"></a>UL<span class="ot">&lt;-</span>p.hat<span class="sc">+</span>se<span class="sc">*</span>z</span>
+<span id="cb303-7"><a href="week-5-lab.html#cb303-7" tabindex="-1"></a>LL</span></code></pre></div>
 <pre><code>## [1] -0.007439496</code></pre>
-<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="week-5-lab.html#cb307-1" tabindex="-1"></a>UL</span></code></pre></div>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="week-5-lab.html#cb305-1" tabindex="-1"></a>UL</span></code></pre></div>
 <pre><code>## [1] 0.0474395</code></pre>
 <p>The lower limit of the CI is actually negative which makes no sense since the binomial proportion is bounded [0,1]. We can clip the CI to have a LL of zero, but there is no guarentee that the “coverage” of the CI contains 95%. To see whether this is true, lets simulate multiple datasets with a true underlying probability of 0.02, calculate confidence intervals from those random samples, and see what proportion of the CIs actually contain the true value (0.02).</p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="week-5-lab.html#cb309-1" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="at">n=</span><span class="dv">1000</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span><span class="fl">0.02</span>) <span class="co">#draw 1000 random datasets-100 trials each</span></span>
-<span id="cb309-2"><a href="week-5-lab.html#cb309-2" tabindex="-1"></a>p.hat<span class="ot">&lt;-</span>data<span class="sc">/</span><span class="dv">100</span> <span class="co">#vector of empirical probabilities p.hat</span></span>
-<span id="cb309-3"><a href="week-5-lab.html#cb309-3" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">100</span></span>
-<span id="cb309-4"><a href="week-5-lab.html#cb309-4" tabindex="-1"></a>se<span class="ot">&lt;-</span><span class="fu">sqrt</span>(p.hat<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p.hat)<span class="sc">/</span>n)</span>
-<span id="cb309-5"><a href="week-5-lab.html#cb309-5" tabindex="-1"></a>z<span class="ot">&lt;-</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
-<span id="cb309-6"><a href="week-5-lab.html#cb309-6" tabindex="-1"></a>LL<span class="ot">&lt;-</span>p.hat<span class="sc">-</span>se<span class="sc">*</span>z <span class="co">#vector of LLs</span></span>
-<span id="cb309-7"><a href="week-5-lab.html#cb309-7" tabindex="-1"></a>UL<span class="ot">&lt;-</span>p.hat<span class="sc">+</span>se<span class="sc">*</span>z <span class="co">#vector of UL</span></span>
-<span id="cb309-8"><a href="week-5-lab.html#cb309-8" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">as.numeric</span>((<span class="fl">0.02</span><span class="sc">&lt;=</span>UL)<span class="sc">&amp;</span>(<span class="fl">0.02</span><span class="sc">&gt;=</span>LL)))<span class="sc">/</span><span class="dv">1000</span> <span class="co">#proportion of times the CI include the true value</span></span></code></pre></div>
-<pre><code>## [1] 0.87</code></pre>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="week-5-lab.html#cb307-1" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="at">n=</span><span class="dv">1000</span>,<span class="at">size=</span><span class="dv">100</span>,<span class="at">prob=</span><span class="fl">0.02</span>) <span class="co">#draw 1000 random datasets-100 trials each</span></span>
+<span id="cb307-2"><a href="week-5-lab.html#cb307-2" tabindex="-1"></a>p.hat<span class="ot">&lt;-</span>data<span class="sc">/</span><span class="dv">100</span> <span class="co">#vector of empirical probabilities p.hat</span></span>
+<span id="cb307-3"><a href="week-5-lab.html#cb307-3" tabindex="-1"></a>n<span class="ot">&lt;-</span><span class="dv">100</span></span>
+<span id="cb307-4"><a href="week-5-lab.html#cb307-4" tabindex="-1"></a>se<span class="ot">&lt;-</span><span class="fu">sqrt</span>(p.hat<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p.hat)<span class="sc">/</span>n)</span>
+<span id="cb307-5"><a href="week-5-lab.html#cb307-5" tabindex="-1"></a>z<span class="ot">&lt;-</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb307-6"><a href="week-5-lab.html#cb307-6" tabindex="-1"></a>LL<span class="ot">&lt;-</span>p.hat<span class="sc">-</span>se<span class="sc">*</span>z <span class="co">#vector of LLs</span></span>
+<span id="cb307-7"><a href="week-5-lab.html#cb307-7" tabindex="-1"></a>UL<span class="ot">&lt;-</span>p.hat<span class="sc">+</span>se<span class="sc">*</span>z <span class="co">#vector of UL</span></span>
+<span id="cb307-8"><a href="week-5-lab.html#cb307-8" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">as.numeric</span>((<span class="fl">0.02</span><span class="sc">&lt;=</span>UL)<span class="sc">&amp;</span>(<span class="fl">0.02</span><span class="sc">&gt;=</span>LL)))<span class="sc">/</span><span class="dv">1000</span> <span class="co">#proportion of times the CI include the true value</span></span></code></pre></div>
+<pre><code>## [1] 0.882</code></pre>
 <p>We see that the CIs are actually too narrow! The Wald test is commonly used but as we have demonstrated, it is not very good in practice. R and its packages make it easy to get better CIs for a binomial proportion and in real analysis, you should use these more sophisticated methods.</p>
 <p>One of the better functions for doing tests of binomial proportions is provided by Dr. Dirk Enzmann. He has posted a function online that calculates 11 different versions of the binomial confidence interval.</p>
 <p>I have pasted the function here:</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="week-5-lab.html#cb311-1" tabindex="-1"></a><span class="co"># Calculate confidence intervals for a single proportion according to one of 11</span></span>
-<span id="cb311-2"><a href="week-5-lab.html#cb311-2" tabindex="-1"></a><span class="co"># methods (default: log likelihood ratio) for a level of alpha (default: .05)</span></span>
-<span id="cb311-3"><a href="week-5-lab.html#cb311-3" tabindex="-1"></a><span class="co"># and with significant decimals (default: 3) given a proportion and the sample</span></span>
-<span id="cb311-4"><a href="week-5-lab.html#cb311-4" tabindex="-1"></a><span class="co"># size (see: Newcombe, 1998; Brown et al., 2001). Except for the asymptotic and</span></span>
-<span id="cb311-5"><a href="week-5-lab.html#cb311-5" tabindex="-1"></a><span class="co"># Agresti&#39;s methods all methods can yield asymmetric intervals around p:</span></span>
-<span id="cb311-6"><a href="week-5-lab.html#cb311-6" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb311-7"><a href="week-5-lab.html#cb311-7" tabindex="-1"></a><span class="co"># Methods are:</span></span>
-<span id="cb311-8"><a href="week-5-lab.html#cb311-8" tabindex="-1"></a><span class="co"># &#39;likelihood&#39;    : log likelihood ratio interval (default)</span></span>
-<span id="cb311-9"><a href="week-5-lab.html#cb311-9" tabindex="-1"></a><span class="co"># &#39;asymptotic&#39;    : simple &quot;classical text book&quot; or Wald method interval</span></span>
-<span id="cb311-10"><a href="week-5-lab.html#cb311-10" tabindex="-1"></a><span class="co"># &#39;asymptotic.cc  : asymptotic with Yates&#39; continuity correction</span></span>
-<span id="cb311-11"><a href="week-5-lab.html#cb311-11" tabindex="-1"></a><span class="co"># &#39;score&#39;         : score or Wilson method interval (= prop.test(...,correct=F),</span></span>
-<span id="cb311-12"><a href="week-5-lab.html#cb311-12" tabindex="-1"></a><span class="co">#                   i.e. without Yates&#39; continuity correction)</span></span>
-<span id="cb311-13"><a href="week-5-lab.html#cb311-13" tabindex="-1"></a><span class="co"># &#39;score.cc&#39;      : score method with continuity correction (= default of</span></span>
-<span id="cb311-14"><a href="week-5-lab.html#cb311-14" tabindex="-1"></a><span class="co">#                   prop.test())</span></span>
-<span id="cb311-15"><a href="week-5-lab.html#cb311-15" tabindex="-1"></a><span class="co"># &#39;binomial&#39;      : &quot;exact&quot; or Clopper-Pearson method interval (= binom.test())</span></span>
-<span id="cb311-16"><a href="week-5-lab.html#cb311-16" tabindex="-1"></a><span class="co"># &#39;binomial.midp&#39; : binomial mid-p &quot;quasi-exact&quot; interval</span></span>
-<span id="cb311-17"><a href="week-5-lab.html#cb311-17" tabindex="-1"></a><span class="co"># &#39;Jeffreys&#39;      : Jeffreys prior interval</span></span>
-<span id="cb311-18"><a href="week-5-lab.html#cb311-18" tabindex="-1"></a><span class="co"># &#39;Agresti-Coull&#39; : Agresti-Coull method adding z?/2 successes</span></span>
-<span id="cb311-19"><a href="week-5-lab.html#cb311-19" tabindex="-1"></a><span class="co"># &#39;Agresti.2_2    : Agresti-Coull method adding 2 successes and 2 failures</span></span>
-<span id="cb311-20"><a href="week-5-lab.html#cb311-20" tabindex="-1"></a><span class="co"># &#39;logit&#39;         : logit interval</span></span>
-<span id="cb311-21"><a href="week-5-lab.html#cb311-21" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb311-22"><a href="week-5-lab.html#cb311-22" tabindex="-1"></a><span class="co"># References:</span></span>
-<span id="cb311-23"><a href="week-5-lab.html#cb311-23" tabindex="-1"></a><span class="co"># Brown, L.D., Cai, T.T. &amp; DasGupta, A. (2001). Interval estimation for a</span></span>
-<span id="cb311-24"><a href="week-5-lab.html#cb311-24" tabindex="-1"></a><span class="co">#    binomial proportion. Statistical Science, 16, 101-133.</span></span>
-<span id="cb311-25"><a href="week-5-lab.html#cb311-25" tabindex="-1"></a><span class="co"># Newcombe, R.G. (1998). Two-sided confidence intervals for the single propor-</span></span>
-<span id="cb311-26"><a href="week-5-lab.html#cb311-26" tabindex="-1"></a><span class="co">#    tion: Comparison of seven methods. Statistics in Medicine, 17, 857-872.</span></span>
-<span id="cb311-27"><a href="week-5-lab.html#cb311-27" tabindex="-1"></a></span>
-<span id="cb311-28"><a href="week-5-lab.html#cb311-28" tabindex="-1"></a>prop.CI <span class="ot">=</span> <span class="cf">function</span>(p,n,<span class="at">alpha=</span>.<span class="dv">05</span>,<span class="at">digits=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;likelihood&quot;</span>)</span>
-<span id="cb311-29"><a href="week-5-lab.html#cb311-29" tabindex="-1"></a>{</span>
-<span id="cb311-30"><a href="week-5-lab.html#cb311-30" tabindex="-1"></a><span class="co"># Asymptotic (or Wald) interval:</span></span>
-<span id="cb311-31"><a href="week-5-lab.html#cb311-31" tabindex="-1"></a>  z <span class="ot">=</span> <span class="fu">qnorm</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>)</span>
-<span id="cb311-32"><a href="week-5-lab.html#cb311-32" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;asymptotic&#39;</span>) {</span>
-<span id="cb311-33"><a href="week-5-lab.html#cb311-33" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(p<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">/</span>n)</span>
-<span id="cb311-34"><a href="week-5-lab.html#cb311-34" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((p<span class="sc">-</span>z<span class="sc">*</span>se),(p<span class="sc">+</span>z<span class="sc">*</span>se)),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-35"><a href="week-5-lab.html#cb311-35" tabindex="-1"></a>  }</span>
-<span id="cb311-36"><a href="week-5-lab.html#cb311-36" tabindex="-1"></a><span class="co"># Asymptotic (or Wald-test) CIs with continuity correction:</span></span>
-<span id="cb311-37"><a href="week-5-lab.html#cb311-37" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;asymptotic.cc&#39;</span>) {</span>
-<span id="cb311-38"><a href="week-5-lab.html#cb311-38" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(p<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">/</span>n)</span>
-<span id="cb311-39"><a href="week-5-lab.html#cb311-39" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((p<span class="sc">-</span>z<span class="sc">*</span>se<span class="dv">-1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>n)),(p<span class="sc">+</span>z<span class="sc">*</span>se<span class="sc">+</span><span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>n))),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,</span>
-<span id="cb311-40"><a href="week-5-lab.html#cb311-40" tabindex="-1"></a>              <span class="at">method=</span>method)</span>
-<span id="cb311-41"><a href="week-5-lab.html#cb311-41" tabindex="-1"></a>  }</span>
-<span id="cb311-42"><a href="week-5-lab.html#cb311-42" tabindex="-1"></a><span class="co"># Score test (or Wilson) interval:</span></span>
-<span id="cb311-43"><a href="week-5-lab.html#cb311-43" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;score&#39;</span>) {</span>
-<span id="cb311-44"><a href="week-5-lab.html#cb311-44" tabindex="-1"></a>    term1 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>n<span class="sc">*</span>p <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span></span>
-<span id="cb311-45"><a href="week-5-lab.html#cb311-45" tabindex="-1"></a>    term2 <span class="ot">=</span> z<span class="sc">*</span><span class="fu">sqrt</span>(z<span class="sc">**</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>n<span class="sc">*</span>p<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p))</span>
-<span id="cb311-46"><a href="week-5-lab.html#cb311-46" tabindex="-1"></a>    term3 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(n <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span>)</span>
-<span id="cb311-47"><a href="week-5-lab.html#cb311-47" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((term1<span class="sc">-</span>term2)<span class="sc">/</span>term3,(term1<span class="sc">+</span>term2)<span class="sc">/</span>term3),<span class="at">n=</span>n,</span>
-<span id="cb311-48"><a href="week-5-lab.html#cb311-48" tabindex="-1"></a>              <span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-49"><a href="week-5-lab.html#cb311-49" tabindex="-1"></a>  }</span>
-<span id="cb311-50"><a href="week-5-lab.html#cb311-50" tabindex="-1"></a><span class="co"># Score test (or Wilson) interval with continuity correction:</span></span>
-<span id="cb311-51"><a href="week-5-lab.html#cb311-51" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;score.cc&#39;</span>) {</span>
-<span id="cb311-52"><a href="week-5-lab.html#cb311-52" tabindex="-1"></a>    term1 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>n<span class="sc">*</span>p <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span></span>
-<span id="cb311-53"><a href="week-5-lab.html#cb311-53" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">&gt;</span><span class="dv">0</span>) {</span>
-<span id="cb311-54"><a href="week-5-lab.html#cb311-54" tabindex="-1"></a>    term2L <span class="ot">=</span> z<span class="sc">*</span><span class="fu">sqrt</span>(z<span class="sc">**</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>n <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>p<span class="sc">*</span>(n<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">+</span><span class="dv">1</span>))</span>
-<span id="cb311-55"><a href="week-5-lab.html#cb311-55" tabindex="-1"></a>    }</span>
-<span id="cb311-56"><a href="week-5-lab.html#cb311-56" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">&lt;</span><span class="dv">1</span>) {</span>
-<span id="cb311-57"><a href="week-5-lab.html#cb311-57" tabindex="-1"></a>    term2U <span class="ot">=</span> z<span class="sc">*</span><span class="fu">sqrt</span>(z<span class="sc">**</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>n <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>p<span class="sc">*</span>(n<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb311-58"><a href="week-5-lab.html#cb311-58" tabindex="-1"></a>    }</span>
-<span id="cb311-59"><a href="week-5-lab.html#cb311-59" tabindex="-1"></a>    term3 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(n <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span>)</span>
-<span id="cb311-60"><a href="week-5-lab.html#cb311-60" tabindex="-1"></a>    <span class="cf">if</span> ((p<span class="sc">&gt;</span><span class="dv">0</span>) <span class="sc">&amp;</span> (p<span class="sc">&lt;</span><span class="dv">1</span>)) {</span>
-<span id="cb311-61"><a href="week-5-lab.html#cb311-61" tabindex="-1"></a>      CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((term1<span class="dv">-1</span><span class="sc">-</span>term2L)<span class="sc">/</span>term3,(term1<span class="sc">+</span><span class="dv">1</span><span class="sc">+</span>term2U)<span class="sc">/</span>term3),<span class="at">n=</span>n,</span>
-<span id="cb311-62"><a href="week-5-lab.html#cb311-62" tabindex="-1"></a>                <span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-63"><a href="week-5-lab.html#cb311-63" tabindex="-1"></a>    }</span>
-<span id="cb311-64"><a href="week-5-lab.html#cb311-64" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">==</span><span class="dv">0</span>) {</span>
-<span id="cb311-65"><a href="week-5-lab.html#cb311-65" tabindex="-1"></a>      CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="at">CIU=</span>(term1<span class="sc">+</span><span class="dv">1</span><span class="sc">+</span>term2U)<span class="sc">/</span>term3),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,</span>
-<span id="cb311-66"><a href="week-5-lab.html#cb311-66" tabindex="-1"></a>                <span class="at">method=</span>method)</span>
-<span id="cb311-67"><a href="week-5-lab.html#cb311-67" tabindex="-1"></a>    }</span>
-<span id="cb311-68"><a href="week-5-lab.html#cb311-68" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">==</span><span class="dv">1</span>) {</span>
-<span id="cb311-69"><a href="week-5-lab.html#cb311-69" tabindex="-1"></a>      CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((term1<span class="dv">-1</span><span class="sc">-</span>term2L)<span class="sc">/</span>term3,<span class="dv">1</span>),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,</span>
-<span id="cb311-70"><a href="week-5-lab.html#cb311-70" tabindex="-1"></a>                <span class="at">method=</span>method)</span>
-<span id="cb311-71"><a href="week-5-lab.html#cb311-71" tabindex="-1"></a>    }</span>
-<span id="cb311-72"><a href="week-5-lab.html#cb311-72" tabindex="-1"></a>  }</span>
-<span id="cb311-73"><a href="week-5-lab.html#cb311-73" tabindex="-1"></a><span class="co"># Binomial (&#39;exact&#39; or Clopper-Pearson) interval:</span></span>
-<span id="cb311-74"><a href="week-5-lab.html#cb311-74" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;binomial&#39;</span>) {</span>
-<span id="cb311-75"><a href="week-5-lab.html#cb311-75" tabindex="-1"></a>    conf.int<span class="ot">=</span><span class="fu">binom.test</span>(<span class="fu">round</span>(p<span class="sc">*</span>n),n,<span class="at">conf.level=</span><span class="dv">1</span><span class="sc">-</span>alpha)<span class="sc">$</span>conf.int</span>
-<span id="cb311-76"><a href="week-5-lab.html#cb311-76" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-77"><a href="week-5-lab.html#cb311-77" tabindex="-1"></a>  }</span>
-<span id="cb311-78"><a href="week-5-lab.html#cb311-78" tabindex="-1"></a><span class="co"># Binomial mid-p quasi-exact interval:</span></span>
-<span id="cb311-79"><a href="week-5-lab.html#cb311-79" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;binomial.midp&#39;</span>) {</span>
-<span id="cb311-80"><a href="week-5-lab.html#cb311-80" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
-<span id="cb311-81"><a href="week-5-lab.html#cb311-81" tabindex="-1"></a>    uplim <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb311-82"><a href="week-5-lab.html#cb311-82" tabindex="-1"></a>    lowlim <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb311-83"><a href="week-5-lab.html#cb311-83" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">==</span> <span class="dv">0</span>) uplim <span class="ot">=</span> <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">**</span>(<span class="dv">1</span><span class="sc">/</span>n)</span>
-<span id="cb311-84"><a href="week-5-lab.html#cb311-84" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">==</span> n) lowlim <span class="ot">=</span> alpha<span class="sc">**</span>(<span class="dv">1</span><span class="sc">/</span>n)</span>
-<span id="cb311-85"><a href="week-5-lab.html#cb311-85" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> x <span class="sc">&lt;</span> n) {</span>
-<span id="cb311-86"><a href="week-5-lab.html#cb311-86" tabindex="-1"></a>      pp <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.000001</span>,<span class="fl">0.999999</span>,<span class="at">length=</span><span class="dv">100000</span>)</span>
-<span id="cb311-87"><a href="week-5-lab.html#cb311-87" tabindex="-1"></a>      a2 <span class="ot">=</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">pbinom</span>(x<span class="dv">-1</span>,n,pp) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">pbinom</span>(x,n,pp)</span>
-<span id="cb311-88"><a href="week-5-lab.html#cb311-88" tabindex="-1"></a>      uplim <span class="ot">=</span> pp[<span class="fu">max</span>(<span class="fu">which</span>(a2<span class="sc">&gt;</span>(alpha<span class="sc">/</span><span class="dv">2</span>)))]</span>
-<span id="cb311-89"><a href="week-5-lab.html#cb311-89" tabindex="-1"></a>      lowlim <span class="ot">=</span> pp[<span class="fu">min</span>(<span class="fu">which</span>(a2<span class="sc">&lt;</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>)))]</span>
-<span id="cb311-90"><a href="week-5-lab.html#cb311-90" tabindex="-1"></a>    }</span>
-<span id="cb311-91"><a href="week-5-lab.html#cb311-91" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(lowlim,uplim),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-92"><a href="week-5-lab.html#cb311-92" tabindex="-1"></a>  }</span>
-<span id="cb311-93"><a href="week-5-lab.html#cb311-93" tabindex="-1"></a><span class="co"># Log-likelihood-ratio interval:</span></span>
-<span id="cb311-94"><a href="week-5-lab.html#cb311-94" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;likelihood&#39;</span>) {</span>
-<span id="cb311-95"><a href="week-5-lab.html#cb311-95" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
-<span id="cb311-96"><a href="week-5-lab.html#cb311-96" tabindex="-1"></a>    k <span class="ot">=</span> <span class="sc">-</span><span class="fu">qchisq</span>(<span class="dv">1</span><span class="sc">-</span>alpha,<span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb311-97"><a href="week-5-lab.html#cb311-97" tabindex="-1"></a>    pp <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.000001</span>,<span class="fl">0.999999</span>,<span class="at">length=</span><span class="dv">100000</span>)</span>
-<span id="cb311-98"><a href="week-5-lab.html#cb311-98" tabindex="-1"></a>    lik <span class="ot">=</span> <span class="fu">dbinom</span>(x,<span class="at">size=</span>n,pp)</span>
-<span id="cb311-99"><a href="week-5-lab.html#cb311-99" tabindex="-1"></a>    logLR <span class="ot">=</span> <span class="fu">log</span>(lik<span class="sc">/</span><span class="fu">max</span>(lik))</span>
-<span id="cb311-100"><a href="week-5-lab.html#cb311-100" tabindex="-1"></a>    conf.int<span class="ot">=</span><span class="fu">range</span>(pp[logLR <span class="sc">&gt;</span> k])</span>
-<span id="cb311-101"><a href="week-5-lab.html#cb311-101" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-102"><a href="week-5-lab.html#cb311-102" tabindex="-1"></a>  }</span>
-<span id="cb311-103"><a href="week-5-lab.html#cb311-103" tabindex="-1"></a><span class="co"># Jeffreys prior interval:</span></span>
-<span id="cb311-104"><a href="week-5-lab.html#cb311-104" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;Jeffreys&#39;</span>) {</span>
-<span id="cb311-105"><a href="week-5-lab.html#cb311-105" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
-<span id="cb311-106"><a href="week-5-lab.html#cb311-106" tabindex="-1"></a>    conf.int<span class="ot">=</span><span class="fu">qbeta</span>(<span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>),x<span class="fl">+.5</span>,n<span class="sc">-</span>x<span class="fl">+.5</span>)</span>
-<span id="cb311-107"><a href="week-5-lab.html#cb311-107" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-108"><a href="week-5-lab.html#cb311-108" tabindex="-1"></a>  }</span>
-<span id="cb311-109"><a href="week-5-lab.html#cb311-109" tabindex="-1"></a><span class="co"># Agresti-Coull (adding z?/2 successes) interval</span></span>
-<span id="cb311-110"><a href="week-5-lab.html#cb311-110" tabindex="-1"></a><span class="co"># (see: http://www.stat.ufl.edu/~aa/cda/R/one_sample/R1/index.html )</span></span>
-<span id="cb311-111"><a href="week-5-lab.html#cb311-111" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;Agresti-Coull&#39;</span>) {</span>
-<span id="cb311-112"><a href="week-5-lab.html#cb311-112" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
-<span id="cb311-113"><a href="week-5-lab.html#cb311-113" tabindex="-1"></a>    tr <span class="ot">=</span> z<span class="sc">**</span><span class="dv">2</span></span>
-<span id="cb311-114"><a href="week-5-lab.html#cb311-114" tabindex="-1"></a>    suc <span class="ot">=</span> tr<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb311-115"><a href="week-5-lab.html#cb311-115" tabindex="-1"></a>    pp <span class="ot">=</span> (x<span class="sc">+</span>suc)<span class="sc">/</span>(n<span class="sc">+</span>tr)</span>
-<span id="cb311-116"><a href="week-5-lab.html#cb311-116" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(pp<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pp)<span class="sc">/</span>(n<span class="sc">+</span>tr))</span>
-<span id="cb311-117"><a href="week-5-lab.html#cb311-117" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((pp<span class="sc">-</span>z<span class="sc">*</span>se),(pp<span class="sc">+</span>z<span class="sc">*</span>se)),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-118"><a href="week-5-lab.html#cb311-118" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">0</span>) CI<span class="sc">$</span>CI[<span class="dv">1</span>]<span class="ot">=</span><span class="dv">0</span></span>
-<span id="cb311-119"><a href="week-5-lab.html#cb311-119" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">2</span>] <span class="sc">&gt;</span> <span class="dv">1</span>) CI<span class="sc">$</span>CI[<span class="dv">2</span>]<span class="ot">=</span><span class="dv">1</span></span>
-<span id="cb311-120"><a href="week-5-lab.html#cb311-120" tabindex="-1"></a>  }</span>
-<span id="cb311-121"><a href="week-5-lab.html#cb311-121" tabindex="-1"></a><span class="co"># Agresti-Coull (adding 2 successes and 2 failures) interval:</span></span>
-<span id="cb311-122"><a href="week-5-lab.html#cb311-122" tabindex="-1"></a><span class="co"># (see: http://www.stat.ufl.edu/~aa/cda/R/one_sample/R1/index.html )</span></span>
-<span id="cb311-123"><a href="week-5-lab.html#cb311-123" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;Agresti.2_2&#39;</span>) {</span>
-<span id="cb311-124"><a href="week-5-lab.html#cb311-124" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
-<span id="cb311-125"><a href="week-5-lab.html#cb311-125" tabindex="-1"></a>    pp <span class="ot">=</span> (x<span class="sc">+</span><span class="dv">2</span>)<span class="sc">/</span>(n<span class="sc">+</span><span class="dv">4</span>)</span>
-<span id="cb311-126"><a href="week-5-lab.html#cb311-126" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(pp<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pp)<span class="sc">/</span>(n<span class="sc">+</span><span class="dv">4</span>))</span>
-<span id="cb311-127"><a href="week-5-lab.html#cb311-127" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((pp<span class="sc">-</span>z<span class="sc">*</span>se),(pp<span class="sc">+</span>z<span class="sc">*</span>se)),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-128"><a href="week-5-lab.html#cb311-128" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">0</span>) CI<span class="sc">$</span>CI[<span class="dv">1</span>]<span class="ot">=</span><span class="dv">0</span></span>
-<span id="cb311-129"><a href="week-5-lab.html#cb311-129" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">2</span>] <span class="sc">&gt;</span> <span class="dv">1</span>) CI<span class="sc">$</span>CI[<span class="dv">2</span>]<span class="ot">=</span><span class="dv">1</span></span>
-<span id="cb311-130"><a href="week-5-lab.html#cb311-130" tabindex="-1"></a>  }</span>
-<span id="cb311-131"><a href="week-5-lab.html#cb311-131" tabindex="-1"></a><span class="co"># Logit interval:</span></span>
-<span id="cb311-132"><a href="week-5-lab.html#cb311-132" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;logit&#39;</span>) {</span>
-<span id="cb311-133"><a href="week-5-lab.html#cb311-133" tabindex="-1"></a>    lambda <span class="ot">=</span> <span class="fu">log</span>(p<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>p))</span>
-<span id="cb311-134"><a href="week-5-lab.html#cb311-134" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
-<span id="cb311-135"><a href="week-5-lab.html#cb311-135" tabindex="-1"></a>    V <span class="ot">=</span> n<span class="sc">/</span>(x<span class="sc">*</span>(n<span class="sc">-</span>x))</span>
-<span id="cb311-136"><a href="week-5-lab.html#cb311-136" tabindex="-1"></a>    conf.int <span class="ot">=</span> (<span class="fu">c</span>(lambda <span class="sc">-</span> z<span class="sc">*</span><span class="fu">sqrt</span>(V),lambda <span class="sc">+</span> z<span class="sc">*</span><span class="fu">sqrt</span>(V)))</span>
-<span id="cb311-137"><a href="week-5-lab.html#cb311-137" tabindex="-1"></a>    conf.int <span class="ot">=</span> <span class="fu">exp</span>(conf.int)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(conf.int))</span>
-<span id="cb311-138"><a href="week-5-lab.html#cb311-138" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
-<span id="cb311-139"><a href="week-5-lab.html#cb311-139" tabindex="-1"></a>  }</span>
-<span id="cb311-140"><a href="week-5-lab.html#cb311-140" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;p ? &#39;</span>,<span class="dv">100</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>alpha),<span class="st">&#39;%-CI = &#39;</span>,<span class="fu">round</span>(p,digits),<span class="st">&#39; (&#39;</span>,</span>
-<span id="cb311-141"><a href="week-5-lab.html#cb311-141" tabindex="-1"></a>      <span class="fu">round</span>(CI<span class="sc">$</span>CI[<span class="dv">1</span>],digits),<span class="st">&#39;; &#39;</span>,<span class="fu">round</span>(CI<span class="sc">$</span>CI[<span class="dv">2</span>],digits),<span class="st">&#39;)</span><span class="sc">\n</span><span class="st">&#39;</span>,<span class="at">sep=</span><span class="st">&#39;&#39;</span>)</span>
-<span id="cb311-142"><a href="week-5-lab.html#cb311-142" tabindex="-1"></a>  CI</span>
-<span id="cb311-143"><a href="week-5-lab.html#cb311-143" tabindex="-1"></a>}</span>
-<span id="cb311-144"><a href="week-5-lab.html#cb311-144" tabindex="-1"></a></span>
-<span id="cb311-145"><a href="week-5-lab.html#cb311-145" tabindex="-1"></a><span class="co"># The following example  reproduces the data of Table I of Newcombe (1998,</span></span>
-<span id="cb311-146"><a href="week-5-lab.html#cb311-146" tabindex="-1"></a><span class="co"># p. 861). Other methods to calculate confidence intervals of a single propor-</span></span>
-<span id="cb311-147"><a href="week-5-lab.html#cb311-147" tabindex="-1"></a><span class="co"># tion as discussed in Brown et al. (2001) will also be demonstrated.</span></span>
-<span id="cb311-148"><a href="week-5-lab.html#cb311-148" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb311-149"><a href="week-5-lab.html#cb311-149" tabindex="-1"></a><span class="co"># To run, de-comment the following line:</span></span>
-<span id="cb311-150"><a href="week-5-lab.html#cb311-150" tabindex="-1"></a><span class="co"># source(&quot;http://www2.jura.uni-hamburg.de/instkrim/kriminologie/Mitarbeiter/Enzmann/Software/ex_prop.CI.r&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="week-5-lab.html#cb309-1" tabindex="-1"></a><span class="co"># Calculate confidence intervals for a single proportion according to one of 11</span></span>
+<span id="cb309-2"><a href="week-5-lab.html#cb309-2" tabindex="-1"></a><span class="co"># methods (default: log likelihood ratio) for a level of alpha (default: .05)</span></span>
+<span id="cb309-3"><a href="week-5-lab.html#cb309-3" tabindex="-1"></a><span class="co"># and with significant decimals (default: 3) given a proportion and the sample</span></span>
+<span id="cb309-4"><a href="week-5-lab.html#cb309-4" tabindex="-1"></a><span class="co"># size (see: Newcombe, 1998; Brown et al., 2001). Except for the asymptotic and</span></span>
+<span id="cb309-5"><a href="week-5-lab.html#cb309-5" tabindex="-1"></a><span class="co"># Agresti&#39;s methods all methods can yield asymmetric intervals around p:</span></span>
+<span id="cb309-6"><a href="week-5-lab.html#cb309-6" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb309-7"><a href="week-5-lab.html#cb309-7" tabindex="-1"></a><span class="co"># Methods are:</span></span>
+<span id="cb309-8"><a href="week-5-lab.html#cb309-8" tabindex="-1"></a><span class="co"># &#39;likelihood&#39;    : log likelihood ratio interval (default)</span></span>
+<span id="cb309-9"><a href="week-5-lab.html#cb309-9" tabindex="-1"></a><span class="co"># &#39;asymptotic&#39;    : simple &quot;classical text book&quot; or Wald method interval</span></span>
+<span id="cb309-10"><a href="week-5-lab.html#cb309-10" tabindex="-1"></a><span class="co"># &#39;asymptotic.cc  : asymptotic with Yates&#39; continuity correction</span></span>
+<span id="cb309-11"><a href="week-5-lab.html#cb309-11" tabindex="-1"></a><span class="co"># &#39;score&#39;         : score or Wilson method interval (= prop.test(...,correct=F),</span></span>
+<span id="cb309-12"><a href="week-5-lab.html#cb309-12" tabindex="-1"></a><span class="co">#                   i.e. without Yates&#39; continuity correction)</span></span>
+<span id="cb309-13"><a href="week-5-lab.html#cb309-13" tabindex="-1"></a><span class="co"># &#39;score.cc&#39;      : score method with continuity correction (= default of</span></span>
+<span id="cb309-14"><a href="week-5-lab.html#cb309-14" tabindex="-1"></a><span class="co">#                   prop.test())</span></span>
+<span id="cb309-15"><a href="week-5-lab.html#cb309-15" tabindex="-1"></a><span class="co"># &#39;binomial&#39;      : &quot;exact&quot; or Clopper-Pearson method interval (= binom.test())</span></span>
+<span id="cb309-16"><a href="week-5-lab.html#cb309-16" tabindex="-1"></a><span class="co"># &#39;binomial.midp&#39; : binomial mid-p &quot;quasi-exact&quot; interval</span></span>
+<span id="cb309-17"><a href="week-5-lab.html#cb309-17" tabindex="-1"></a><span class="co"># &#39;Jeffreys&#39;      : Jeffreys prior interval</span></span>
+<span id="cb309-18"><a href="week-5-lab.html#cb309-18" tabindex="-1"></a><span class="co"># &#39;Agresti-Coull&#39; : Agresti-Coull method adding z?/2 successes</span></span>
+<span id="cb309-19"><a href="week-5-lab.html#cb309-19" tabindex="-1"></a><span class="co"># &#39;Agresti.2_2    : Agresti-Coull method adding 2 successes and 2 failures</span></span>
+<span id="cb309-20"><a href="week-5-lab.html#cb309-20" tabindex="-1"></a><span class="co"># &#39;logit&#39;         : logit interval</span></span>
+<span id="cb309-21"><a href="week-5-lab.html#cb309-21" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb309-22"><a href="week-5-lab.html#cb309-22" tabindex="-1"></a><span class="co"># References:</span></span>
+<span id="cb309-23"><a href="week-5-lab.html#cb309-23" tabindex="-1"></a><span class="co"># Brown, L.D., Cai, T.T. &amp; DasGupta, A. (2001). Interval estimation for a</span></span>
+<span id="cb309-24"><a href="week-5-lab.html#cb309-24" tabindex="-1"></a><span class="co">#    binomial proportion. Statistical Science, 16, 101-133.</span></span>
+<span id="cb309-25"><a href="week-5-lab.html#cb309-25" tabindex="-1"></a><span class="co"># Newcombe, R.G. (1998). Two-sided confidence intervals for the single propor-</span></span>
+<span id="cb309-26"><a href="week-5-lab.html#cb309-26" tabindex="-1"></a><span class="co">#    tion: Comparison of seven methods. Statistics in Medicine, 17, 857-872.</span></span>
+<span id="cb309-27"><a href="week-5-lab.html#cb309-27" tabindex="-1"></a></span>
+<span id="cb309-28"><a href="week-5-lab.html#cb309-28" tabindex="-1"></a>prop.CI <span class="ot">=</span> <span class="cf">function</span>(p,n,<span class="at">alpha=</span>.<span class="dv">05</span>,<span class="at">digits=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;likelihood&quot;</span>)</span>
+<span id="cb309-29"><a href="week-5-lab.html#cb309-29" tabindex="-1"></a>{</span>
+<span id="cb309-30"><a href="week-5-lab.html#cb309-30" tabindex="-1"></a><span class="co"># Asymptotic (or Wald) interval:</span></span>
+<span id="cb309-31"><a href="week-5-lab.html#cb309-31" tabindex="-1"></a>  z <span class="ot">=</span> <span class="fu">qnorm</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb309-32"><a href="week-5-lab.html#cb309-32" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;asymptotic&#39;</span>) {</span>
+<span id="cb309-33"><a href="week-5-lab.html#cb309-33" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(p<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">/</span>n)</span>
+<span id="cb309-34"><a href="week-5-lab.html#cb309-34" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((p<span class="sc">-</span>z<span class="sc">*</span>se),(p<span class="sc">+</span>z<span class="sc">*</span>se)),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-35"><a href="week-5-lab.html#cb309-35" tabindex="-1"></a>  }</span>
+<span id="cb309-36"><a href="week-5-lab.html#cb309-36" tabindex="-1"></a><span class="co"># Asymptotic (or Wald-test) CIs with continuity correction:</span></span>
+<span id="cb309-37"><a href="week-5-lab.html#cb309-37" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;asymptotic.cc&#39;</span>) {</span>
+<span id="cb309-38"><a href="week-5-lab.html#cb309-38" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(p<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">/</span>n)</span>
+<span id="cb309-39"><a href="week-5-lab.html#cb309-39" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((p<span class="sc">-</span>z<span class="sc">*</span>se<span class="dv">-1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>n)),(p<span class="sc">+</span>z<span class="sc">*</span>se<span class="sc">+</span><span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>n))),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,</span>
+<span id="cb309-40"><a href="week-5-lab.html#cb309-40" tabindex="-1"></a>              <span class="at">method=</span>method)</span>
+<span id="cb309-41"><a href="week-5-lab.html#cb309-41" tabindex="-1"></a>  }</span>
+<span id="cb309-42"><a href="week-5-lab.html#cb309-42" tabindex="-1"></a><span class="co"># Score test (or Wilson) interval:</span></span>
+<span id="cb309-43"><a href="week-5-lab.html#cb309-43" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;score&#39;</span>) {</span>
+<span id="cb309-44"><a href="week-5-lab.html#cb309-44" tabindex="-1"></a>    term1 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>n<span class="sc">*</span>p <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span></span>
+<span id="cb309-45"><a href="week-5-lab.html#cb309-45" tabindex="-1"></a>    term2 <span class="ot">=</span> z<span class="sc">*</span><span class="fu">sqrt</span>(z<span class="sc">**</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>n<span class="sc">*</span>p<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p))</span>
+<span id="cb309-46"><a href="week-5-lab.html#cb309-46" tabindex="-1"></a>    term3 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(n <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span>)</span>
+<span id="cb309-47"><a href="week-5-lab.html#cb309-47" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((term1<span class="sc">-</span>term2)<span class="sc">/</span>term3,(term1<span class="sc">+</span>term2)<span class="sc">/</span>term3),<span class="at">n=</span>n,</span>
+<span id="cb309-48"><a href="week-5-lab.html#cb309-48" tabindex="-1"></a>              <span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-49"><a href="week-5-lab.html#cb309-49" tabindex="-1"></a>  }</span>
+<span id="cb309-50"><a href="week-5-lab.html#cb309-50" tabindex="-1"></a><span class="co"># Score test (or Wilson) interval with continuity correction:</span></span>
+<span id="cb309-51"><a href="week-5-lab.html#cb309-51" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;score.cc&#39;</span>) {</span>
+<span id="cb309-52"><a href="week-5-lab.html#cb309-52" tabindex="-1"></a>    term1 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>n<span class="sc">*</span>p <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span></span>
+<span id="cb309-53"><a href="week-5-lab.html#cb309-53" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">&gt;</span><span class="dv">0</span>) {</span>
+<span id="cb309-54"><a href="week-5-lab.html#cb309-54" tabindex="-1"></a>    term2L <span class="ot">=</span> z<span class="sc">*</span><span class="fu">sqrt</span>(z<span class="sc">**</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>n <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>p<span class="sc">*</span>(n<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb309-55"><a href="week-5-lab.html#cb309-55" tabindex="-1"></a>    }</span>
+<span id="cb309-56"><a href="week-5-lab.html#cb309-56" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">&lt;</span><span class="dv">1</span>) {</span>
+<span id="cb309-57"><a href="week-5-lab.html#cb309-57" tabindex="-1"></a>    term2U <span class="ot">=</span> z<span class="sc">*</span><span class="fu">sqrt</span>(z<span class="sc">**</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>n <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>p<span class="sc">*</span>(n<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb309-58"><a href="week-5-lab.html#cb309-58" tabindex="-1"></a>    }</span>
+<span id="cb309-59"><a href="week-5-lab.html#cb309-59" tabindex="-1"></a>    term3 <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>(n <span class="sc">+</span> z<span class="sc">**</span><span class="dv">2</span>)</span>
+<span id="cb309-60"><a href="week-5-lab.html#cb309-60" tabindex="-1"></a>    <span class="cf">if</span> ((p<span class="sc">&gt;</span><span class="dv">0</span>) <span class="sc">&amp;</span> (p<span class="sc">&lt;</span><span class="dv">1</span>)) {</span>
+<span id="cb309-61"><a href="week-5-lab.html#cb309-61" tabindex="-1"></a>      CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((term1<span class="dv">-1</span><span class="sc">-</span>term2L)<span class="sc">/</span>term3,(term1<span class="sc">+</span><span class="dv">1</span><span class="sc">+</span>term2U)<span class="sc">/</span>term3),<span class="at">n=</span>n,</span>
+<span id="cb309-62"><a href="week-5-lab.html#cb309-62" tabindex="-1"></a>                <span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-63"><a href="week-5-lab.html#cb309-63" tabindex="-1"></a>    }</span>
+<span id="cb309-64"><a href="week-5-lab.html#cb309-64" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">==</span><span class="dv">0</span>) {</span>
+<span id="cb309-65"><a href="week-5-lab.html#cb309-65" tabindex="-1"></a>      CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="at">CIU=</span>(term1<span class="sc">+</span><span class="dv">1</span><span class="sc">+</span>term2U)<span class="sc">/</span>term3),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,</span>
+<span id="cb309-66"><a href="week-5-lab.html#cb309-66" tabindex="-1"></a>                <span class="at">method=</span>method)</span>
+<span id="cb309-67"><a href="week-5-lab.html#cb309-67" tabindex="-1"></a>    }</span>
+<span id="cb309-68"><a href="week-5-lab.html#cb309-68" tabindex="-1"></a>    <span class="cf">if</span> (p<span class="sc">==</span><span class="dv">1</span>) {</span>
+<span id="cb309-69"><a href="week-5-lab.html#cb309-69" tabindex="-1"></a>      CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((term1<span class="dv">-1</span><span class="sc">-</span>term2L)<span class="sc">/</span>term3,<span class="dv">1</span>),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,</span>
+<span id="cb309-70"><a href="week-5-lab.html#cb309-70" tabindex="-1"></a>                <span class="at">method=</span>method)</span>
+<span id="cb309-71"><a href="week-5-lab.html#cb309-71" tabindex="-1"></a>    }</span>
+<span id="cb309-72"><a href="week-5-lab.html#cb309-72" tabindex="-1"></a>  }</span>
+<span id="cb309-73"><a href="week-5-lab.html#cb309-73" tabindex="-1"></a><span class="co"># Binomial (&#39;exact&#39; or Clopper-Pearson) interval:</span></span>
+<span id="cb309-74"><a href="week-5-lab.html#cb309-74" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;binomial&#39;</span>) {</span>
+<span id="cb309-75"><a href="week-5-lab.html#cb309-75" tabindex="-1"></a>    conf.int<span class="ot">=</span><span class="fu">binom.test</span>(<span class="fu">round</span>(p<span class="sc">*</span>n),n,<span class="at">conf.level=</span><span class="dv">1</span><span class="sc">-</span>alpha)<span class="sc">$</span>conf.int</span>
+<span id="cb309-76"><a href="week-5-lab.html#cb309-76" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-77"><a href="week-5-lab.html#cb309-77" tabindex="-1"></a>  }</span>
+<span id="cb309-78"><a href="week-5-lab.html#cb309-78" tabindex="-1"></a><span class="co"># Binomial mid-p quasi-exact interval:</span></span>
+<span id="cb309-79"><a href="week-5-lab.html#cb309-79" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;binomial.midp&#39;</span>) {</span>
+<span id="cb309-80"><a href="week-5-lab.html#cb309-80" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
+<span id="cb309-81"><a href="week-5-lab.html#cb309-81" tabindex="-1"></a>    uplim <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb309-82"><a href="week-5-lab.html#cb309-82" tabindex="-1"></a>    lowlim <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb309-83"><a href="week-5-lab.html#cb309-83" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">==</span> <span class="dv">0</span>) uplim <span class="ot">=</span> <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">**</span>(<span class="dv">1</span><span class="sc">/</span>n)</span>
+<span id="cb309-84"><a href="week-5-lab.html#cb309-84" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">==</span> n) lowlim <span class="ot">=</span> alpha<span class="sc">**</span>(<span class="dv">1</span><span class="sc">/</span>n)</span>
+<span id="cb309-85"><a href="week-5-lab.html#cb309-85" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> x <span class="sc">&lt;</span> n) {</span>
+<span id="cb309-86"><a href="week-5-lab.html#cb309-86" tabindex="-1"></a>      pp <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.000001</span>,<span class="fl">0.999999</span>,<span class="at">length=</span><span class="dv">100000</span>)</span>
+<span id="cb309-87"><a href="week-5-lab.html#cb309-87" tabindex="-1"></a>      a2 <span class="ot">=</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">pbinom</span>(x<span class="dv">-1</span>,n,pp) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">pbinom</span>(x,n,pp)</span>
+<span id="cb309-88"><a href="week-5-lab.html#cb309-88" tabindex="-1"></a>      uplim <span class="ot">=</span> pp[<span class="fu">max</span>(<span class="fu">which</span>(a2<span class="sc">&gt;</span>(alpha<span class="sc">/</span><span class="dv">2</span>)))]</span>
+<span id="cb309-89"><a href="week-5-lab.html#cb309-89" tabindex="-1"></a>      lowlim <span class="ot">=</span> pp[<span class="fu">min</span>(<span class="fu">which</span>(a2<span class="sc">&lt;</span>(<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>)))]</span>
+<span id="cb309-90"><a href="week-5-lab.html#cb309-90" tabindex="-1"></a>    }</span>
+<span id="cb309-91"><a href="week-5-lab.html#cb309-91" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(lowlim,uplim),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-92"><a href="week-5-lab.html#cb309-92" tabindex="-1"></a>  }</span>
+<span id="cb309-93"><a href="week-5-lab.html#cb309-93" tabindex="-1"></a><span class="co"># Log-likelihood-ratio interval:</span></span>
+<span id="cb309-94"><a href="week-5-lab.html#cb309-94" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;likelihood&#39;</span>) {</span>
+<span id="cb309-95"><a href="week-5-lab.html#cb309-95" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
+<span id="cb309-96"><a href="week-5-lab.html#cb309-96" tabindex="-1"></a>    k <span class="ot">=</span> <span class="sc">-</span><span class="fu">qchisq</span>(<span class="dv">1</span><span class="sc">-</span>alpha,<span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb309-97"><a href="week-5-lab.html#cb309-97" tabindex="-1"></a>    pp <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.000001</span>,<span class="fl">0.999999</span>,<span class="at">length=</span><span class="dv">100000</span>)</span>
+<span id="cb309-98"><a href="week-5-lab.html#cb309-98" tabindex="-1"></a>    lik <span class="ot">=</span> <span class="fu">dbinom</span>(x,<span class="at">size=</span>n,pp)</span>
+<span id="cb309-99"><a href="week-5-lab.html#cb309-99" tabindex="-1"></a>    logLR <span class="ot">=</span> <span class="fu">log</span>(lik<span class="sc">/</span><span class="fu">max</span>(lik))</span>
+<span id="cb309-100"><a href="week-5-lab.html#cb309-100" tabindex="-1"></a>    conf.int<span class="ot">=</span><span class="fu">range</span>(pp[logLR <span class="sc">&gt;</span> k])</span>
+<span id="cb309-101"><a href="week-5-lab.html#cb309-101" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-102"><a href="week-5-lab.html#cb309-102" tabindex="-1"></a>  }</span>
+<span id="cb309-103"><a href="week-5-lab.html#cb309-103" tabindex="-1"></a><span class="co"># Jeffreys prior interval:</span></span>
+<span id="cb309-104"><a href="week-5-lab.html#cb309-104" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;Jeffreys&#39;</span>) {</span>
+<span id="cb309-105"><a href="week-5-lab.html#cb309-105" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
+<span id="cb309-106"><a href="week-5-lab.html#cb309-106" tabindex="-1"></a>    conf.int<span class="ot">=</span><span class="fu">qbeta</span>(<span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>),x<span class="fl">+.5</span>,n<span class="sc">-</span>x<span class="fl">+.5</span>)</span>
+<span id="cb309-107"><a href="week-5-lab.html#cb309-107" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-108"><a href="week-5-lab.html#cb309-108" tabindex="-1"></a>  }</span>
+<span id="cb309-109"><a href="week-5-lab.html#cb309-109" tabindex="-1"></a><span class="co"># Agresti-Coull (adding z?/2 successes) interval</span></span>
+<span id="cb309-110"><a href="week-5-lab.html#cb309-110" tabindex="-1"></a><span class="co"># (see: http://www.stat.ufl.edu/~aa/cda/R/one_sample/R1/index.html )</span></span>
+<span id="cb309-111"><a href="week-5-lab.html#cb309-111" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;Agresti-Coull&#39;</span>) {</span>
+<span id="cb309-112"><a href="week-5-lab.html#cb309-112" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
+<span id="cb309-113"><a href="week-5-lab.html#cb309-113" tabindex="-1"></a>    tr <span class="ot">=</span> z<span class="sc">**</span><span class="dv">2</span></span>
+<span id="cb309-114"><a href="week-5-lab.html#cb309-114" tabindex="-1"></a>    suc <span class="ot">=</span> tr<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb309-115"><a href="week-5-lab.html#cb309-115" tabindex="-1"></a>    pp <span class="ot">=</span> (x<span class="sc">+</span>suc)<span class="sc">/</span>(n<span class="sc">+</span>tr)</span>
+<span id="cb309-116"><a href="week-5-lab.html#cb309-116" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(pp<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pp)<span class="sc">/</span>(n<span class="sc">+</span>tr))</span>
+<span id="cb309-117"><a href="week-5-lab.html#cb309-117" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((pp<span class="sc">-</span>z<span class="sc">*</span>se),(pp<span class="sc">+</span>z<span class="sc">*</span>se)),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-118"><a href="week-5-lab.html#cb309-118" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">0</span>) CI<span class="sc">$</span>CI[<span class="dv">1</span>]<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb309-119"><a href="week-5-lab.html#cb309-119" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">2</span>] <span class="sc">&gt;</span> <span class="dv">1</span>) CI<span class="sc">$</span>CI[<span class="dv">2</span>]<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb309-120"><a href="week-5-lab.html#cb309-120" tabindex="-1"></a>  }</span>
+<span id="cb309-121"><a href="week-5-lab.html#cb309-121" tabindex="-1"></a><span class="co"># Agresti-Coull (adding 2 successes and 2 failures) interval:</span></span>
+<span id="cb309-122"><a href="week-5-lab.html#cb309-122" tabindex="-1"></a><span class="co"># (see: http://www.stat.ufl.edu/~aa/cda/R/one_sample/R1/index.html )</span></span>
+<span id="cb309-123"><a href="week-5-lab.html#cb309-123" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;Agresti.2_2&#39;</span>) {</span>
+<span id="cb309-124"><a href="week-5-lab.html#cb309-124" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
+<span id="cb309-125"><a href="week-5-lab.html#cb309-125" tabindex="-1"></a>    pp <span class="ot">=</span> (x<span class="sc">+</span><span class="dv">2</span>)<span class="sc">/</span>(n<span class="sc">+</span><span class="dv">4</span>)</span>
+<span id="cb309-126"><a href="week-5-lab.html#cb309-126" tabindex="-1"></a>    se <span class="ot">=</span> <span class="fu">sqrt</span>(pp<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pp)<span class="sc">/</span>(n<span class="sc">+</span><span class="dv">4</span>))</span>
+<span id="cb309-127"><a href="week-5-lab.html#cb309-127" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>((pp<span class="sc">-</span>z<span class="sc">*</span>se),(pp<span class="sc">+</span>z<span class="sc">*</span>se)),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-128"><a href="week-5-lab.html#cb309-128" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">0</span>) CI<span class="sc">$</span>CI[<span class="dv">1</span>]<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb309-129"><a href="week-5-lab.html#cb309-129" tabindex="-1"></a>    <span class="cf">if</span> (CI<span class="sc">$</span>CI[<span class="dv">2</span>] <span class="sc">&gt;</span> <span class="dv">1</span>) CI<span class="sc">$</span>CI[<span class="dv">2</span>]<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb309-130"><a href="week-5-lab.html#cb309-130" tabindex="-1"></a>  }</span>
+<span id="cb309-131"><a href="week-5-lab.html#cb309-131" tabindex="-1"></a><span class="co"># Logit interval:</span></span>
+<span id="cb309-132"><a href="week-5-lab.html#cb309-132" tabindex="-1"></a>  <span class="cf">if</span> (method<span class="sc">==</span><span class="st">&#39;logit&#39;</span>) {</span>
+<span id="cb309-133"><a href="week-5-lab.html#cb309-133" tabindex="-1"></a>    lambda <span class="ot">=</span> <span class="fu">log</span>(p<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>p))</span>
+<span id="cb309-134"><a href="week-5-lab.html#cb309-134" tabindex="-1"></a>    x <span class="ot">=</span> <span class="fu">round</span>(p<span class="sc">*</span>n)</span>
+<span id="cb309-135"><a href="week-5-lab.html#cb309-135" tabindex="-1"></a>    V <span class="ot">=</span> n<span class="sc">/</span>(x<span class="sc">*</span>(n<span class="sc">-</span>x))</span>
+<span id="cb309-136"><a href="week-5-lab.html#cb309-136" tabindex="-1"></a>    conf.int <span class="ot">=</span> (<span class="fu">c</span>(lambda <span class="sc">-</span> z<span class="sc">*</span><span class="fu">sqrt</span>(V),lambda <span class="sc">+</span> z<span class="sc">*</span><span class="fu">sqrt</span>(V)))</span>
+<span id="cb309-137"><a href="week-5-lab.html#cb309-137" tabindex="-1"></a>    conf.int <span class="ot">=</span> <span class="fu">exp</span>(conf.int)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(conf.int))</span>
+<span id="cb309-138"><a href="week-5-lab.html#cb309-138" tabindex="-1"></a>    CI <span class="ot">=</span> <span class="fu">list</span>(<span class="at">p=</span>p,<span class="at">CI=</span><span class="fu">c</span>(conf.int[<span class="dv">1</span>],conf.int[<span class="dv">2</span>]),<span class="at">n=</span>n,<span class="at">level=</span><span class="dv">1</span><span class="sc">-</span>alpha,<span class="at">method=</span>method)</span>
+<span id="cb309-139"><a href="week-5-lab.html#cb309-139" tabindex="-1"></a>  }</span>
+<span id="cb309-140"><a href="week-5-lab.html#cb309-140" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;p ? &#39;</span>,<span class="dv">100</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>alpha),<span class="st">&#39;%-CI = &#39;</span>,<span class="fu">round</span>(p,digits),<span class="st">&#39; (&#39;</span>,</span>
+<span id="cb309-141"><a href="week-5-lab.html#cb309-141" tabindex="-1"></a>      <span class="fu">round</span>(CI<span class="sc">$</span>CI[<span class="dv">1</span>],digits),<span class="st">&#39;; &#39;</span>,<span class="fu">round</span>(CI<span class="sc">$</span>CI[<span class="dv">2</span>],digits),<span class="st">&#39;)</span><span class="sc">\n</span><span class="st">&#39;</span>,<span class="at">sep=</span><span class="st">&#39;&#39;</span>)</span>
+<span id="cb309-142"><a href="week-5-lab.html#cb309-142" tabindex="-1"></a>  CI</span>
+<span id="cb309-143"><a href="week-5-lab.html#cb309-143" tabindex="-1"></a>}</span>
+<span id="cb309-144"><a href="week-5-lab.html#cb309-144" tabindex="-1"></a></span>
+<span id="cb309-145"><a href="week-5-lab.html#cb309-145" tabindex="-1"></a><span class="co"># The following example  reproduces the data of Table I of Newcombe (1998,</span></span>
+<span id="cb309-146"><a href="week-5-lab.html#cb309-146" tabindex="-1"></a><span class="co"># p. 861). Other methods to calculate confidence intervals of a single propor-</span></span>
+<span id="cb309-147"><a href="week-5-lab.html#cb309-147" tabindex="-1"></a><span class="co"># tion as discussed in Brown et al. (2001) will also be demonstrated.</span></span>
+<span id="cb309-148"><a href="week-5-lab.html#cb309-148" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb309-149"><a href="week-5-lab.html#cb309-149" tabindex="-1"></a><span class="co"># To run, de-comment the following line:</span></span>
+<span id="cb309-150"><a href="week-5-lab.html#cb309-150" tabindex="-1"></a><span class="co"># source(&quot;http://www2.jura.uni-hamburg.de/instkrim/kriminologie/Mitarbeiter/Enzmann/Software/ex_prop.CI.r&quot;)</span></span></code></pre></div>
 <p>I will use this code to calculate the confidence intervals for the binomial proportion if I get 2 successes out of 100 trials.</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="week-5-lab.html#cb312-1" tabindex="-1"></a>ci<span class="fl">.1</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;asymptotic&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="week-5-lab.html#cb310-1" tabindex="-1"></a>ci<span class="fl">.1</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;asymptotic&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (-0.0074; 0.0474)</code></pre>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="week-5-lab.html#cb314-1" tabindex="-1"></a>ci<span class="fl">.2</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;asymptotic.cc&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="week-5-lab.html#cb312-1" tabindex="-1"></a>ci<span class="fl">.2</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;asymptotic.cc&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (-0.0124; 0.0524)</code></pre>
-<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="week-5-lab.html#cb316-1" tabindex="-1"></a>ci<span class="fl">.3</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;score&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="week-5-lab.html#cb314-1" tabindex="-1"></a>ci<span class="fl">.3</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;score&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0055; 0.07)</code></pre>
-<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="week-5-lab.html#cb318-1" tabindex="-1"></a>ci<span class="fl">.4</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;score.cc&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="week-5-lab.html#cb316-1" tabindex="-1"></a>ci<span class="fl">.4</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;score.cc&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0035; 0.0774)</code></pre>
-<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="week-5-lab.html#cb320-1" tabindex="-1"></a>ci<span class="fl">.5</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;binomial&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="week-5-lab.html#cb318-1" tabindex="-1"></a>ci<span class="fl">.5</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;binomial&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0024; 0.0704)</code></pre>
-<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="week-5-lab.html#cb322-1" tabindex="-1"></a>ci<span class="fl">.6</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;binomial.midp&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="week-5-lab.html#cb320-1" tabindex="-1"></a>ci<span class="fl">.6</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;binomial.midp&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0034; 0.0645)</code></pre>
-<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="week-5-lab.html#cb324-1" tabindex="-1"></a>ci<span class="fl">.7</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="week-5-lab.html#cb322-1" tabindex="-1"></a>ci<span class="fl">.7</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0034; 0.0605)</code></pre>
-<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="week-5-lab.html#cb326-1" tabindex="-1"></a>ci<span class="fl">.8</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;Jeffreys&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="week-5-lab.html#cb324-1" tabindex="-1"></a>ci<span class="fl">.8</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;Jeffreys&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0042; 0.0626)</code></pre>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="week-5-lab.html#cb328-1" tabindex="-1"></a>ci<span class="fl">.9</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;Agresti-Coull&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="week-5-lab.html#cb326-1" tabindex="-1"></a>ci<span class="fl">.9</span>C1 <span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;Agresti-Coull&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0011; 0.0744)</code></pre>
-<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="week-5-lab.html#cb330-1" tabindex="-1"></a>ci<span class="fl">.10</span>C1<span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;Agresti.2_2&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="week-5-lab.html#cb328-1" tabindex="-1"></a>ci<span class="fl">.10</span>C1<span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;Agresti.2_2&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.0015; 0.0754)</code></pre>
-<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="week-5-lab.html#cb332-1" tabindex="-1"></a>ci<span class="fl">.11</span>C1<span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;logit&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="week-5-lab.html#cb330-1" tabindex="-1"></a>ci<span class="fl">.11</span>C1<span class="ot">=</span><span class="fu">prop.CI</span>(<span class="dv">2</span><span class="sc">/</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="at">digits=</span><span class="dv">4</span>,<span class="at">method=</span><span class="st">&#39;logit&#39;</span>)<span class="sc">$</span>CI</span></code></pre></div>
 <pre><code>## p ? 95%-CI = 0.02 (0.005; 0.0764)</code></pre>
 <p>We see that most of these methods correctly constrain the CIs to be bounded by [0,1].</p>
 </div>
 <div id="comparing-two-distributions-1" class="section level2 hasAnchor" number="10.4">
 <h2><span class="header-section-number">10.4</span> Comparing two distributions<a href="week-5-lab.html#comparing-two-distributions-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To perform the K-S test to compare two distributions, we need to simulate some data. We will plot their (empirical) cumulative distributions using the function “ecdf”.</p>
-<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="week-5-lab.html#cb334-1" tabindex="-1"></a>x<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">50</span>,<span class="at">mean=</span><span class="dv">0</span>,<span class="at">sd=</span><span class="dv">1</span>)</span>
-<span id="cb334-2"><a href="week-5-lab.html#cb334-2" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">30</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
-<span id="cb334-3"><a href="week-5-lab.html#cb334-3" tabindex="-1"></a><span class="fu">ks.test</span>(x,y)</span></code></pre></div>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="week-5-lab.html#cb332-1" tabindex="-1"></a>x<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">50</span>,<span class="at">mean=</span><span class="dv">0</span>,<span class="at">sd=</span><span class="dv">1</span>)</span>
+<span id="cb332-2"><a href="week-5-lab.html#cb332-2" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">30</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb332-3"><a href="week-5-lab.html#cb332-3" tabindex="-1"></a><span class="fu">ks.test</span>(x,y)</span></code></pre></div>
 <pre><code>## 
 ##  Two-sample Kolmogorov-Smirnov test
 ## 
 ## data:  x and y
-## D = 0.4, p-value = 0.003526
+## D = 0.56667, p-value = 4.58e-06
 ## alternative hypothesis: two-sided</code></pre>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb336-1"><a href="week-5-lab.html#cb336-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">ecdf</span>(x))</span>
-<span id="cb336-2"><a href="week-5-lab.html#cb336-2" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">ecdf</span>(y),<span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb334-1"><a href="week-5-lab.html#cb334-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">ecdf</span>(x))</span>
+<span id="cb334-2"><a href="week-5-lab.html#cb334-2" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">ecdf</span>(y),<span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 <p><img src="Week-5-lab_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 
 </div>

@@ -258,18 +258,18 @@ summary(fit)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -23.141  -5.693   2.124   5.867  20.529 
+## -22.806  -3.261   1.601   5.601  16.075 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)   2.3917     3.8766   0.617    0.542    
-## X            -2.2446     0.2184 -10.279 5.22e-11 ***
+## (Intercept)  -7.8186     3.8025  -2.056   0.0492 *  
+## X            -1.9549     0.2142  -9.127 6.94e-10 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 10.35 on 28 degrees of freedom
-## Multiple R-squared:  0.7905,	Adjusted R-squared:  0.783 
-## F-statistic: 105.7 on 1 and 28 DF,  p-value: 5.221e-11
+## Residual standard error: 10.15 on 28 degrees of freedom
+## Multiple R-squared:  0.7484,	Adjusted R-squared:  0.7395 
+## F-statistic: 83.31 on 1 and 28 DF,  p-value: 6.944e-10
 ```
 
 Copy this script into R and r-run it several times. Notice how the estimates for slope and intercept bounce around, but they should be correct *on average* and also the scale of variation from one run to the next should make sense given the estimate of the standard error. (Their standard deviation should be the standard error.) Notice also that as you increase sigma, the R2 goes down because now you are increasing the variation that is *not* explained by the covariate. Try changing the number of samples drawn, either by extending the vector of the covariates or by drawing multiple times for each value (you will have to modify the code to make this latter change work). Notice how the standard errors on the intercept and slope coefficients gets smaller as the data set gets larger but the estimate for sigma (which is listed as the residual standard error near the bottom) does not. The parameter sigma is a property of the underlying population, not a property of the sample drawn, so it does not get smaller as you increase the number of samples in the dataset. (If this does not make sense, ask me!)
@@ -284,7 +284,7 @@ mean(residuals(fit)^2)
 ```
 
 ```
-## [1] 100.0224
+## [1] 96.23298
 ```
 
 which is the same as 
@@ -295,7 +295,7 @@ sum(residuals(fit)^2)/n
 ```
 
 ```
-## [1] 100.0224
+## [1] 96.23298
 ```
 
 while the *root mean squared error* is
@@ -306,7 +306,7 @@ sqrt(mean(residuals(fit)^2))
 ```
 
 ```
-## [1] 10.00112
+## [1] 9.809841
 ```
 
 which is just the square-root of the mean squared error above. Note that some authors (like Aho) will divide by the degrees of freedom to get an unbiased estimate of the population variance $\sigma^{2}_{\epsilon}$ and call that the mean squared error (or MSE). Just be careful with these terms to know whether the calculation is a description of the residuals observed (in which case the denominator is $n$) or whether the calculation is being used as an unbiased estimate of the larger population of residuals (in which case the denominator should be the degrees of freedom).
@@ -319,7 +319,7 @@ sum(residuals(fit)^2)
 ```
 
 ```
-## [1] 3000.673
+## [1] 2886.989
 ```
 
 and the *residual standard error* is
@@ -330,7 +330,7 @@ sqrt(sum(residuals(fit)^2)/(n-2))
 ```
 
 ```
-## [1] 10.35214
+## [1] 10.15415
 ```
 
 Note that this last term uses the degrees of freedom in the numerator. The residual standard error is taking the data you have as a sample from the larger population and trying to estimate the standard error from the larger population. So it takes the residual sum of squares, divides that by the degrees of freedom (we have 30 data points, we lost 2 degrees of freedom, so we are left with 28 degrees of freedom for the estimation of the residual standard error) and then takes the square root. We can think of the mean squared error as being the population variance (i.e. the variance of the residuals if the dataset represented the entire population, see [our discussion in Week 1](#pop_vs_sample_var)) but this underestimates the variance if all we have is a sample from the larger population, so in this case we want to calculate the *sample variance* (i.e. our estimate of the population variance if all we have is a sample)
@@ -341,7 +341,7 @@ mean(residuals(fit)^2)*(n/(n-2))
 ```
 
 ```
-## [1] 107.1669
+## [1] 103.1068
 ```
 
 This should come close to what we used to generate the data ($\sigma=10$ so $\sigma^{2}=100$). (If you go back and change the code to use a larger number of data points, the estimate will be closer.)
@@ -354,7 +354,7 @@ sigma(fit)
 ```
 
 ```
-## [1] 10.35214
+## [1] 10.15415
 ```
 
 Notice that this is note quite the same (and is always slightly larger) than this alternative estimate of $\sigma$.
@@ -366,7 +366,7 @@ fitdistr(residuals(fit),"normal")$estimate[2]
 
 ```
 ##       sd 
-## 10.00112
+## 9.809841
 ```
 
 This takes your residuals, uses fitdistr to fit a Normal distribution to them, and then reports the standard deviation of the residuals. This should give you a measure of the spread of the residuals, which should be the same as the residual standard error extracted from sigma(fit).
@@ -656,6 +656,54 @@ $$
 
 Why does R do that? In the first case, you have a slope and an intercept, and R is comparing the model you have against an alternate model which includes only an intercept. When you have an intercept-only model, that intercept is going to be the mean $\bar{Y}$. (Does it make sense why that is?) However, when you have supressed the intercept, the original alternate model (intercept only) no longer makes sense. So R chooses a new alternate model which is one of just random noise with $\bar{Y}=0$. If we look at the expression above, the effect of this is to increase the residuals going into SSE and the total sum of squares SST. However, the increase in SST is generally larger than the increase in SSE, which means that the R2 actually increases. The bottom line is that funny things happy when you suppress the intercept and while the output (effect sizes and standard errors) is still perfectly valid, the metrics of model fit become different and the with-intercept and without-intercept models can no longer be compared sensibly.
 
+Centering the covariates
+---------------------
+
+So far we have taken the covariates as is and have used those in our linear model. That decision has some consequences that we will explore now. Let's use bootstrap to sample with replacement, and then look at how our estimates of the slope and intercept vary from one bootstrapped sample to the next.
+
+
+```r
+intercepts<-c()
+slopes<-c()
+for (i in 1:1000)
+{
+indices<-sample(seq(1,length(eruptions)),replace=T)
+bootstrapped.eruptions<-eruptions[indices]
+bootstrapped.waiting<-waiting[indices] 
+
+eruption.bs.lm<-lm(bootstrapped.eruptions~bootstrapped.waiting)
+intercepts<-c(intercepts,eruption.bs.lm$coefficients[1])
+slopes<-c(slopes,eruption.bs.lm$coefficients[2])
+}
+plot(slopes,intercepts)
+```
+
+<img src="Week-9-lab_files/figure-html/unnamed-chunk-35-1.png" width="672" />
+
+The estimates of slope and intercept and highly correlated, because an increase in the slope will tend to decrease the intercept and vice versa. This is a consequence of the fact that the two parameters are estimated from the same data and in this case, an increase in the estimate of the slope has to drive a decrease in the intercept. (You can see this by looking back at the plot of the data. A steeper slope that goes through $(\bar{X},\bar{Y})$ has to have a smaller intercept.) This is not a problem per se, but it does mean that the estimates of the slope and intercept are not independent of each other. What happens if we redo the same bootstrapping exercise but center the covariate by subtracting the mean; this creates a new covariates that is centered on waiting=0.
+
+
+```r
+intercepts<-c()
+slopes<-c()
+for (i in 1:1000)
+{
+indices<-sample(seq(1,length(eruptions)),replace=T)
+bootstrapped.eruptions<-eruptions[indices]
+bootstrapped.waiting<-waiting[indices] - mean(waiting)
+
+eruption.bs.lm<-lm(bootstrapped.eruptions~bootstrapped.waiting)
+intercepts<-c(intercepts,eruption.bs.lm$coefficients[1])
+slopes<-c(slopes,eruption.bs.lm$coefficients[2])
+}
+plot(slopes,intercepts)
+```
+
+<img src="Week-9-lab_files/figure-html/unnamed-chunk-36-1.png" width="672" />
+
+Note that by centering the covariate, we break the dependence of the slope and intercept estimates. If you are using 'optim' to fit the model (which lm() is doing under the hood anyways), centering the covariate in this way will make it easier for optim() to find the MLE estimates for slope and intercept, and it will make the estimates returned by optim() less sensitive to the starting values. As a general matter, it is a good idea to center your covariates (this is especially true when we get to regression with multiple covariates) before fitting your model. Just be sure to remember that you have done this as it changes the interpretation of the intercept (now the intercept reflect the value of the response at the mean value of the covariates).
+
+
 Weighted regression
 ---------------------
 
@@ -687,7 +735,7 @@ eruption.lm.wt<-lm(eruptions~waiting,weights=rep(1,times=272)+9*as.numeric(short
 abline(a=eruption.lm.wt$coef[1],b=eruption.lm.wt$coef[2],col="purple",lwd=2)
 ```
 
-<img src="Week-9-lab_files/figure-html/unnamed-chunk-35-1.png" width="672" />
+<img src="Week-9-lab_files/figure-html/unnamed-chunk-37-1.png" width="672" />
 
 Robust regression
 ------------------
@@ -762,7 +810,7 @@ temp<-c(which(rownames(Duncan)=="RR.engineer"),which(rownames(Duncan)=="conducto
 text(x=Duncan$education[temp]-8,y=Duncan$income[temp],labels=rownames(Duncan)[temp],cex=0.5)
 ```
 
-<img src="Week-9-lab_files/figure-html/unnamed-chunk-37-1.png" width="672" />
+<img src="Week-9-lab_files/figure-html/unnamed-chunk-39-1.png" width="672" />
 
 ```r
 #identify(x=Duncan$education, y=Duncan$income, labels=rownames(Duncan))
@@ -897,8 +945,8 @@ duncan.boot
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 6.3002197  0.238124814  4.32462613
-## t2* 0.6615263 -0.007693935  0.07175313
+## t1* 6.3002197  0.146046228  4.66295183
+## t2* 0.6615263 -0.003855036  0.07448981
 ```
 
 **<span style="color: green;">Checkpoint #5: How would we know if the bias is significant (i.e., how would we calculate the standard error of the bias)?</span>**
@@ -946,7 +994,7 @@ abline(a=coef(Duncan.model.lm)[1],b=coef(Duncan.model.lm)[2])
 abline(a=coef(Duncan.model.sma)[1],b=coef(Duncan.model.sma)[2],col="red")
 ```
 
-<img src="Week-9-lab_files/figure-html/unnamed-chunk-44-1.png" width="672" />
+<img src="Week-9-lab_files/figure-html/unnamed-chunk-46-1.png" width="672" />
 
 The SMA line is closer to what you would probably draw by eye as going through the 'cloud' of points, since our instinct is to draw a line through the principle axis of variation and not through the regression line, which has a smaller slope.
 
