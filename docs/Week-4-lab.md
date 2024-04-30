@@ -206,14 +206,14 @@ opt1
 
 ```
 ## $par
-## [1] 1.033575 1.969664
+## [1] 1.03663 2.03866
 ## 
 ## $value
-## [1] 2096.855
+## [1] 2131.314
 ## 
 ## $counts
 ## function gradient 
-##       53       NA 
+##       57       NA 
 ## 
 ## $convergence
 ## [1] 0
@@ -232,8 +232,8 @@ fitdistr(x,"normal")
 
 ```
 ##       mean          sd    
-##   1.03397484   1.96976847 
-##  (0.06228955) (0.04404536)
+##   1.03690341   2.03882858 
+##  (0.06447342) (0.04558959)
 ```
 
 Notice that this function outputs the SE as well, whereas our function and 'optim' only give the MLE. Note that we can use the SE provided by 'optim' to calculate a confidence interval. For example, the 95th percentile CI would be given by $(\mbox{MLE estimate} - 1.96*SE, \mbox{MLE estimate} + 1.96*SE)$. But notice that using the SE in this way yields symmetric confidence intervals (LL and UL both the same distance from the MLE) and yet we just showed above that the actual CI may be asymmetric (like it was for $\sigma$). This is because 'optim' is *approximating* the likelihood surface as a quadratic surface in the vicinity of the MLE, and this is only a good approximation if the likelihood surface is indeed quadratic and symmetric in the vicinity of the MLE. So 'optim''s assumption that the NLL profile is symmetric and well fit by a quadratic function is a reasonable function for the $\mu$ parameter but its a bad approximation for the $\sigma$ parameter. *When you are doing "mission critical" analysis for your research, it is better to find the correct CI by using the likelihood profile and not the SE provided by 'optim'.*
